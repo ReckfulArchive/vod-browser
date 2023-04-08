@@ -178,7 +178,13 @@ data class HttpHeaders(
 
 @Serializable
 data class Subtitles(
-    val rechat: List<OldArchiveRechat>
+    val rechat: List<Rechat>
+)
+
+@Serializable
+data class Rechat(
+    val url: String,
+    val ext: String
 )
 
 @Serializable
