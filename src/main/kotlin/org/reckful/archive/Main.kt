@@ -6,18 +6,24 @@ import org.reckful.archive.parsers.TowerCardParser
 import java.io.File
 
 // TODO remove hardcoding, extract it to be an environment variable?
-private val FILES_DIR = File("/home/ignat/IdeaProjects/twitch-metadata/files").also { check(it.exists()) }
+private val filesDir = File("/home/ignat/IdeaProjects/twitch-metadata/files").also { check(it.exists()) }
 
 // can be used as a single place to run any scripts in combination with each other
 fun main() {
-    val towerCards = TowerCardParser(FILES_DIR).getTowerCards()
-    val oldArchiveInfo = OldArchiveInfoParser(FILES_DIR).getOldArchiveInfo()
+    val towerCards = TowerCardParser(filesDir).getTowerCards()
+    val oldArchiveInfo = OldArchiveInfoParser(filesDir).getOldArchiveInfo()
 
-    println("Use for setting a breakpoint")
+    val thumbnailExtractor = ThumbnailExtractor()
 
-//    ThumbnailExtractor()
-//        .extractThumbnails(
-//            towerCards = towerCards,
-//            outDir = File("thumbnails")
-//        )
+    thumbnailExtractor.extractFromTowerCards(
+        towerCards = towerCards,
+        outDir = filesDir.resolve("thumbnails/320x180")
+    )
+
+    thumbnailExtractor.extractFromOldArchiveInfo(
+        oldArchiveInfo = oldArchiveInfo,
+        outDir = filesDir.resolve("thumbnails/640x320")
+    )
+
+    println("Boop")
 }
