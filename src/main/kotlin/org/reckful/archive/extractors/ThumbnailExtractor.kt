@@ -1,6 +1,6 @@
 package org.reckful.archive.extractors
 
-import org.reckful.archive.parsers.OldArchiveTwitchVodInfo
+import org.reckful.archive.parsers.OldArchiveVodInfo
 import org.reckful.archive.parsers.VideoTowerCard
 import java.io.File
 import java.net.URL
@@ -21,7 +21,7 @@ class ThumbnailExtractor {
         }
     }
 
-    fun extractFromOldArchiveInfo(oldArchiveInfo: List<OldArchiveTwitchVodInfo>, outDir: File) {
+    fun extractFromOldArchiveInfo(oldArchiveInfo: List<OldArchiveVodInfo>, outDir: File) {
         oldArchiveInfo.forEachIndexed { index, oldVodInfo ->
             val bestThumbnailUrl = getBestThumbnailUrl(oldVodInfo) ?: return@forEachIndexed
 
@@ -42,7 +42,7 @@ class ThumbnailExtractor {
         }
     }
 
-    private fun getBestThumbnailUrl(vodInfo: OldArchiveTwitchVodInfo): String? {
+    private fun getBestThumbnailUrl(vodInfo: OldArchiveVodInfo): String? {
         val primaryUrl = vodInfo.thumbnail
         val maxPreferenceUrl = vodInfo.thumbnails.maxBy { it.preference }.url
         if (primaryUrl != maxPreferenceUrl) {

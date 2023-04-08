@@ -1,3 +1,5 @@
+@file:Suppress("DuplicatedCode")
+
 package org.reckful.archive.parsers
 
 import kotlinx.serialization.SerialName
@@ -12,7 +14,7 @@ private const val OLD_ARCHIVE_INFO_DIR = "old-archive-info"
 class OldArchiveInfoParser(
     private val filesDirectory: File
 ) {
-    fun getOldArchiveInfo(): List<OldArchiveTwitchVodInfo> {
+    fun getOldArchiveInfo(): List<OldArchiveVodInfo> {
         val archiveInfoDir = filesDirectory.resolve(OLD_ARCHIVE_INFO_DIR).takeIf { it.exists() }
             ?: throw IllegalArgumentException("Expected the old archive info dir to exist")
 
@@ -30,7 +32,7 @@ class OldArchiveInfoParser(
 }
 
 @Serializable
-data class OldArchiveTwitchVodInfo(
+data class OldArchiveVodInfo(
     val extractor: String,
     val protocol: String,
     @SerialName("format_note")
@@ -72,40 +74,40 @@ data class OldArchiveTwitchVodInfo(
     val formatId: String,
     @SerialName("uploader_id")
     val uploaderId: String,
-    val subtitles: Subtitles,
-    val thumbnails: List<Thumbnail>,
+    val subtitles: OldArchiveSubtitles,
+    val thumbnails: List<OldArchiveThumbnail>,
     val url: String,
     @SerialName("extractor_key")
     val extractorKey: String,
     val vcodec: String? = null,
     @SerialName("http_headers")
-    val httpHeaders: HttpHeaders,
+    val httpHeaders: OldArchiveHttpHeaders,
     val ext: String,
     @SerialName("webpage_url")
     val webpageUrl: String,
-    val formats: List<Format>
+    val formats: List<OldArchiveFormat>
 )
 
 @Serializable
-data class Subtitles(
-    val rechat: List<Rechat>
+data class OldArchiveSubtitles(
+    val rechat: List<OldArchiveRechat>
 )
 
 @Serializable
-data class Rechat(
+data class OldArchiveRechat(
     val url: String,
     val ext: String
 )
 
 @Serializable
-data class Thumbnail(
+data class OldArchiveThumbnail(
     val url: String,
     val preference: Int,
     val id: String
 )
 
 @Serializable
-data class HttpHeaders(
+data class OldArchiveHttpHeaders(
     @SerialName("Accept-Charset")
     val acceptCharset: String,
 
@@ -123,9 +125,9 @@ data class HttpHeaders(
 )
 
 @Serializable
-data class Format(
+data class OldArchiveFormat(
     @SerialName("http_headers")
-    val httpHeaders: HttpHeaders? = null,
+    val httpHeaders: OldArchiveHttpHeaders? = null,
     val protocol: String,
     val format: String,
     @SerialName("format_note")

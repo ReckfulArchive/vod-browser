@@ -1,6 +1,7 @@
 package org.reckful.archive
 
 import org.reckful.archive.extractors.ThumbnailExtractor
+import org.reckful.archive.parsers.AllVideosInfoParser
 import org.reckful.archive.parsers.OldArchiveInfoParser
 import org.reckful.archive.parsers.TowerCardParser
 import java.io.File
@@ -12,6 +13,7 @@ private val filesDir = File("/home/ignat/IdeaProjects/twitch-metadata/files").al
 fun main() {
     val towerCards = TowerCardParser(filesDir).getTowerCards()
     val oldArchiveInfo = OldArchiveInfoParser(filesDir).getOldArchiveInfo()
+    val vodsInfo = AllVideosInfoParser(filesDir).getVodInfo()
 
     val thumbnailExtractor = ThumbnailExtractor()
 
