@@ -7,12 +7,13 @@ import kotlinx.serialization.json.Json
 import java.io.File
 import java.lang.IllegalArgumentException
 
-private const val OLD_ARCHIVE_INFO_DIR = "/home/ignat/IdeaProjects/twitch-metadata/src/main/resources/old-archive-info"
+private const val OLD_ARCHIVE_INFO_DIR = "old-archive-info"
 
-class OldArchiveInfoParser {
-
+class OldArchiveInfoParser(
+    private val filesDirectory: File
+) {
     fun getOldArchiveInfo(): List<OldArchiveTwitchVodInfo> {
-        val archiveInfoDir = File(OLD_ARCHIVE_INFO_DIR).takeIf { it.exists() }
+        val archiveInfoDir = filesDirectory.resolve(OLD_ARCHIVE_INFO_DIR).takeIf { it.exists() }
             ?: throw IllegalArgumentException("Expected the old archive info dir to exist")
 
         val infoFiles = archiveInfoDir.listFiles() ?: throw IllegalStateException("No files for dir $archiveInfoDir")

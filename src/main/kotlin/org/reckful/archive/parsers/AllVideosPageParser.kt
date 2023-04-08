@@ -4,8 +4,8 @@ import org.jsoup.Jsoup
 import org.jsoup.nodes.Element
 import java.io.File
 
-private const val INDEX_FILES_PATH = "/all-videos-page/index_files"
-private const val INDEX_HTML_PATH = "/all-videos-page/index.html"
+private const val INDEX_HTML_PATH = "all-videos-page/index.html"
+private const val INDEX_FILES_PATH = "all-videos-page/index_files"
 
 data class VideoTowerCard(
     val name: String,
@@ -18,8 +18,9 @@ data class VideoTowerCard(
  * Parses content from https://www.twitch.tv/reckful/videos?filter=all&sort=time
  * that was scrolled down to the very bottom and saved on April 7th, 2023.
  */
-class TowerCardParser {
-
+class TowerCardParser(
+    private val filesDirectory: File
+) {
     fun getTowerCards(): List<VideoTowerCard> {
         val towerCardElements = Jsoup.parse(getIndexFileContents())
             .select("div .ScTower-sc-1sjzzes-0 > div")
@@ -29,10 +30,11 @@ class TowerCardParser {
     }
 
     private fun getIndexFileContents(): String {
-        return this.javaClass.getResource(INDEX_HTML_PATH)
+        return filesDirectory.resolve(INDEX_HTML_PATH)
+            .takeIf { it.exists() }
             ?.readText()
             ?.takeIf { it.isNotEmpty() }
-            ?: throw IllegalArgumentException("Expected the index file to exist and not be empty")
+            ?: throw IllegalArgumentException("Expected the index file to exist in $filesDirectory and not be empty")
     }
 
     private fun Element.toVideoTowerCard(): VideoTowerCard {
