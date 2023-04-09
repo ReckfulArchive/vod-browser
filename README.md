@@ -15,5 +15,7 @@ Notable:
   downloaded sometime during the summer of 2020. Describes the files of the main VOD archive (11TB).
 * [all-videos-page](files/all-videos-page) - a copy of the [all videos page][1] as of April 8th, 2023.
   Includes both HTML contents, images and some other things. Useful for extracting all video ids and thumbnails.
+* [highlights-page](files/highlights-page) - a copy of the videos page with the "highlights" filter applied as of
+  April 8th, 2023. Beware that some VODs were converted to highlights to not be deleted, so it overlaps.
 
 [1]: https://www.twitch.tv/reckful/videos?filter=all

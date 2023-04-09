@@ -2,8 +2,9 @@ package org.reckful.archive
 
 import org.reckful.archive.extractors.ThumbnailExtractor
 import org.reckful.archive.parsers.AllVideosInfoParser
+import org.reckful.archive.parsers.AllVideosPageParser
+import org.reckful.archive.parsers.HighlightsPageParser
 import org.reckful.archive.parsers.OldArchiveInfoParser
-import org.reckful.archive.parsers.TowerCardParser
 import java.io.File
 
 // TODO remove hardcoding, extract it to be an environment variable?
@@ -11,14 +12,15 @@ private val filesDir = File("/home/ignat/IdeaProjects/twitch-metadata/files").al
 
 // can be used as a single place to run any scripts in combination with each other
 fun main() {
-    val towerCards = TowerCardParser(filesDir).getTowerCards()
+    val allVideoCards = AllVideosPageParser(filesDir).getTowerCards()
+    val highlightsCards = HighlightsPageParser(filesDir).getTowerCards()
     val oldArchiveInfo = OldArchiveInfoParser(filesDir).getOldArchiveInfo()
-    val vodsInfo = AllVideosInfoParser(filesDir).getVodInfo()
+    val vodsInfo = AllVideosInfoParser(filesDir).getVideosInfo()
 
     val thumbnailExtractor = ThumbnailExtractor()
 
     thumbnailExtractor.extractFromTowerCards(
-        towerCards = towerCards,
+        towerCards = allVideoCards,
         outDir = filesDir.resolve("thumbnails/320x180")
     )
 

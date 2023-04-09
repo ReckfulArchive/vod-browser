@@ -14,7 +14,7 @@ private const val ALL_VIDEOS_INFO_DIR_PATH = "all-videos-info"
 class AllVideosInfoParser(
     private val filesDirectory: File
 ) {
-    fun getVodInfo(): List<VodInfo> {
+    fun getVideosInfo(): List<VideoInfo> {
         val infoDir = filesDirectory.resolve(ALL_VIDEOS_INFO_DIR_PATH).takeIf { it.exists() }
             ?: throw IllegalArgumentException("Expected the info dir to exist")
 
@@ -32,7 +32,7 @@ class AllVideosInfoParser(
 }
 
 @Serializable
-data class VodInfo(
+data class VideoInfo(
     val id: String,
     val title: String,
     val description: String? = null,
