@@ -52,7 +52,7 @@ data class VideoInfo(
     val formats: List<Format>,
     val subtitles: Subtitles? = null,
     @SerialName("webpage_url")
-    val webpageUrl: String? = null,
+    val webpageUrl: String,
     @SerialName("webpage_url_basename")
     val webpageUrlBasename: String? = null,
     @SerialName("webpage_url_domain")
@@ -64,7 +64,7 @@ data class VideoInfo(
     @SerialName("display_id")
     val displayId: String? = null,
     @SerialName("fulltitle")
-    val fullTitle: String? = null,
+    val fullTitle: String,
     @SerialName("duration_string")
     val durationString: String? = null,
     @SerialName("upload_date")

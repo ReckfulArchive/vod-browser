@@ -1,6 +1,7 @@
 package org.reckful.archive
 
 import org.reckful.archive.extractors.ThumbnailExtractor
+import org.reckful.archive.mergers.AllSourcesMerger
 import org.reckful.archive.parsers.AllVideosInfoParser
 import org.reckful.archive.parsers.AllVideosPageParser
 import org.reckful.archive.parsers.HighlightsPageParser
@@ -15,19 +16,26 @@ fun main() {
     val allVideoCards = AllVideosPageParser(filesDir).getTowerCards()
     val highlightsCards = HighlightsPageParser(filesDir).getTowerCards()
     val oldArchiveInfo = OldArchiveInfoParser(filesDir).getOldArchiveInfo()
-    val vodsInfo = AllVideosInfoParser(filesDir).getVideosInfo()
-
+    val allVideosInfo = AllVideosInfoParser(filesDir).getVideosInfo()
     val thumbnailExtractor = ThumbnailExtractor()
 
-    thumbnailExtractor.extractFromTowerCards(
-        towerCards = allVideoCards,
-        outDir = filesDir.resolve("thumbnails/320x180")
-    )
-
-    thumbnailExtractor.extractFromOldArchiveInfo(
+    val mergedInfo = AllSourcesMerger(
+        filesDirectory = filesDir,
+        allVideosPageCards = allVideoCards,
+        highlightsPageCards = highlightsCards,
         oldArchiveInfo = oldArchiveInfo,
-        outDir = filesDir.resolve("thumbnails/640x320")
-    )
+        allVideosInfo = allVideosInfo,
+        thumbnailExtractor = thumbnailExtractor
+    ).merge()
+
+//    thumbnailExtractor.extractFromTowerCards(
+//        towerCards = allVideoCards,
+//        outDir = filesDir.resolve("thumbnails/320x180")
+//    )
+//    thumbnailExtractor.extractFromOldArchiveInfo(
+//        oldArchiveInfo = oldArchiveInfo,
+//        outDir = filesDir.resolve("thumbnails/640x320")
+//    )
 
     println("Boop")
 }

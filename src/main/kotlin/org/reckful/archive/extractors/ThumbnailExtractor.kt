@@ -8,13 +8,17 @@ import javax.imageio.ImageIO
 
 class ThumbnailExtractor {
 
+    fun findByVideoId(videoId: String, directories: List<File>): File? {
+        return directories.firstNotNullOfOrNull { it.findByVideoId(videoId) }
+    }
+
     fun extractFromTowerCards(towerCards: List<VideoTowerCard>, outDir: File) {
         for (card in towerCards) {
             val thumbnail = card.thumbnail ?: continue
 
             val videoId = card.link.substringAfterLast("/")
             val extension = thumbnail.extension
-            val outputFile = outDir.resolve("video-$videoId.$extension")
+            val outputFile = outDir.resolve(getCommonFileName(videoId, extension))
             if (!outputFile.exists()) {
                 thumbnail.copyTo(outputFile)
             }
@@ -27,7 +31,7 @@ class ThumbnailExtractor {
 
             val videoId = oldVodInfo.id.removePrefix("v")
             val extension = bestThumbnailUrl.substringAfterLast(".")
-            val outputFile = outDir.resolve("video-$videoId.$extension")
+            val outputFile = outDir.resolve(getCommonFileName(videoId, extension))
 
             if (!outputFile.exists()) {
                 println("Downloading image #${index + 1} out of ${oldArchiveInfo.size}")
@@ -64,5 +68,22 @@ class ThumbnailExtractor {
         }
 
         return primaryUrl
+    }
+
+    private fun getCommonFileName(videoId: String, extension: String): String {
+        return "video-$videoId.$extension"
+    }
+
+    /**
+     * @receiver directory that contains all thumbnail files
+     */
+    private fun File.findByVideoId(videoId: String): File? {
+        val possibleFileNames = listOf(
+            "video-$videoId.jpg",
+            "video-$videoId.jpeg",
+        )
+        return possibleFileNames
+            .map { this.resolve(it) }
+            .firstOrNull { it.exists() }
     }
 }
