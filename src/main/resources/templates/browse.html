@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en" data-bs-theme="auto">
+<head>
+    <script src="/js/theme-switcher.js"></script>
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Video archive of Byron Bernstein, also known as Reckful">
+
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+    <link rel="manifest" href="/site.webmanifest">
+
+    <title>VODs - Reckful Archive</title>
+
+    <link rel="canonical" href="https://vods.reckful-archive.org">
+
+    <link rel="stylesheet" href="/webjars/bootstrap/5.3.2/css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="/webjars/bootstrap-icons/1.11.1/font/bootstrap-icons.min.css"/>
+    <link rel="stylesheet" href="/css/bootstrap-select.min.css"/>
+    <link rel="stylesheet" href="/css/main.css"/>
+    <link rel="stylesheet" href="/css/browse.css"/>
+    <link href="/videojs/skins/treso/videojs.min.css" rel="stylesheet" type="text/css"/>
+<body>
+
+<svg th:replace="~{theme-switcher :: icons}">
+    <!-- THEME SWITCHER ICONS -->
+</svg>
+
+<main>
+    <section th:replace="~{browse-header :: section}"></section>
+
+    <div class="container-xxl">
+
+        <!-- VODS FILTERS -->
+        <form th:replace="~{browse-filters :: form}"></form>
+
+        <!-- VOD CARDS -->
+        <div th:replace="~{browse-vods :: search-results}"></div>
+    </div>
+
+    <!-- THEME SWITCHER BUTTON -->
+    <div th:replace="~{theme-switcher :: button}"></div>
+
+    <!-- VOD MODAL CONTAINER -->
+    <div th:replace="~{browse-modal-vod :: container}"></div>
+</main>
+
+<script src="/webjars/bootstrap/5.3.2/js/bootstrap.bundle.min.js"></script>
+<script src="/js/jquery.min.js"></script>
+<script src="/js/bootstrap-select.min.js"></script>
+<script src="/webjars/htmx.org/1.9.8/dist/htmx.min.js"></script>
+<script src="/js/browse.js"></script>
+
+<!-- VideoJS and Nuevo scripts and plugins -->
+<script src="/videojs/video.min.js"></script>
+<script src="/videojs/nuevo.min.js"></script>
+<script src="https://www.gstatic.com/cv/js/sender/v1/cast_sender.js?loadCastFramework=1"></script>
+<script src="/videojs/plugins/videojs.hotkeys.min.js"></script>
+<script src="/videojs/plugins/videojs-chromecast.min.js"></script>
+
+</body>
+</html>
