@@ -17,7 +17,7 @@ class ChapterService(
     @Transactional(isolation = Isolation.REPEATABLE_READ)
     fun getChaptersWebVttFile(vodId: Long): String {
         val vod = vodRepository.findById(vodId)
-            ?.takeIf { it.duration.toHours() < 24 } // TODO add handling later, there's only 4 vods without chapters
+            ?.takeIf { it.duration.toHours() < 24 } // TODO add handling later, there's only 4 vods > 24h
             ?: return WebVttService.WEBVTT_EMPTY_RESPONSE
 
         val chapters = vodRepository.findVodChapters(listOf(vodId))

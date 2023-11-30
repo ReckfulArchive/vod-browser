@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+
+<body>
+
+<!--/*@thymesVar id="suggestionPage" type="org.reckful.archive.browser.model.Page<org.reckful.archive.browser.model.vod.VodSuggestion>"*/-->
+<th:block th:fragment="nextByDateContainer(vodId)">
+
+    <div th:hx-get="|/suggestions/vod/${vodId}/next|"
+         hx-target="#nextByDateResults"
+         hx-swap="outerHTML"
+         hx-trigger="load"
+         hx-indicator="#request-indicator-spinner">
+    </div>
+    <div id="nextByDateResults" th:fragment="nextByDateResults">
+        <th:block th:replace="~{::suggestion-block(page=${suggestionPage},header='Next by date')}"></th:block>
+        <th:block th:replace="~{::request-spinner}"></th:block>
+    </div>
+</th:block>
+
+<!--/*@thymesVar id="suggestionPage" type="org.reckful.archive.browser.model.Page<org.reckful.archive.browser.model.vod.VodSuggestion>"*/-->
+<th:block th:fragment="moreLikeThis(vodId)">
+
+    <div th:hx-get="|/suggestions/vod/${vodId}/more|"
+         hx-target="#moreLikeThisResults"
+         hx-swap="outerHTML"
+         hx-trigger="load"
+         hx-indicator="#request-indicator-spinner">
+    </div>
+    <div id="moreLikeThisResults" th:fragment="moreLikeThisResults">
+        <th:block th:replace="~{::suggestion-block(page=${suggestionPage},header='More like this')}"></th:block>
+        <th:block th:replace="~{::request-spinner}"></th:block>
+    </div>
+</th:block>
+
+<!--/*@thymesVar id="page" type="org.reckful.archive.browser.model.Page<org.reckful.archive.browser.model.vod.VodSuggestion>"*/-->
+<th:block th:fragment="suggestion-block(page, header)"
+          th:with="hasSuggestion=${page != null && not page.isEmpty}">
+
+    <div th:if="${hasSuggestion}" class="row pt-4">
+        <div class="col-12">
+            <h3 th:text="${header}"></h3>
+        </div>
+    </div>
+
+    <div th:if="${hasSuggestion}" th:styleappend="${page.data.size() > 1} ? 'card-group'">
+        <!--/*@thymesVar id="vodSuggestion" type="org.reckful.archive.browser.model.vod.VodSuggestion"*/-->
+        <div class="row g-0 row-cols-1 row-cols-sm-3 row-cols-md-4 row-cols-lg-5">
+            <div th:each="vodSuggestion : ${page.data}" class="col card g-0">
+                <th:block th:replace="~{::suggestion-card-content(vodSuggestion=${vodSuggestion})}"></th:block>
+            </div>
+        </div>
+    </div>
+</th:block>
+
+<!--/*@thymesVar id="vodSuggestion" type="org.reckful.archive.browser.model.vod.VodSuggestion"*/-->
+<th:block th:fragment="suggestion-card-content(vodSuggestion)" th:object="${vodSuggestion}">
+    <div class="img-badge-container vod-thumbnail">
+        <a role="button"
+           class="btn btn-link p-0"
+           th:href="|/vod/*{vodId}|">
+
+            <img class="card-img-top img-fluid"
+                 th:src="*{thumbnailUrl}"
+                 alt="Vod thumbnail"/>
+        </a>
+        <div class="badge badge-top-left text-bg-dark" th:text="*{duration}"></div>
+        <div class="badge badge-bottom-right text-bg-dark" th:text="*{date}"></div>
+    </div>
+    <div class="card-body py-0">
+        <div class="row">
+            <small class="text-body-secondary text-truncate fw-semibold px-1 py-1"
+                   th:text="*{title}"
+                   th:title="*{title}">
+            </small>
+        </div>
+    </div>
+</th:block>
+
+<th:block th:fragment="request-spinner">
+    <div id="request-indicator-spinner" class="htmx-indicator row w-100 justify-content-center py-5">
+        <div class="spinner-border" style="width: 5rem; height: 5rem;" role="status">
+            <span class="visually-hidden">Loading...</span>
+        </div>
+    </div>
+</th:block>
+
+</body>
+
+</html>

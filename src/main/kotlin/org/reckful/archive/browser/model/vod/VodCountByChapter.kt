@@ -1,4 +1,4 @@
-package org.reckful.archive.browser.model.db
+package org.reckful.archive.browser.model.vod
 
 data class VodCountByChapter(
     val chapterId: Long,

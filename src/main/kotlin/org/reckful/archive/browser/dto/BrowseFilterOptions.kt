@@ -1,9 +1,8 @@
 package org.reckful.archive.browser.dto
 
-import org.reckful.archive.browser.controller.DEFAULT_CHAPTER_FILTER_VALUE
-import org.reckful.archive.browser.controller.DEFAULT_SORT_FILTER_VALUE
-import org.reckful.archive.browser.controller.DEFAULT_YEAR_FILTER_VALUE
-import org.reckful.archive.browser.model.browse.BrowseFilterSort
+import org.reckful.archive.browser.model.browse.*
+import java.net.URLEncoder
+import java.nio.charset.StandardCharsets
 
 data class BrowseFilterOptions(
     val title: String?,
@@ -18,20 +17,38 @@ data class BrowseFilterOptions(
     fun parseYear(): Int? = year?.toIntOrNull()
 
     fun parseSort(): BrowseFilterSort {
-        val sortValue = sort ?: DEFAULT_SORT_FILTER_VALUE
-        return requireNotNull(BrowseFilterSort.findByFilterValue(sortValue)) {
-            "Param \"sort\" could not be mapped. Expected values: " +
-                    BrowseFilterSort.entries.joinToString(separator = ", ") { it.filterValue }
+        val sortValue = sort ?: BrowseFilterSort.DEFAULT_VALUE
+        return requireNotNull(findByFilterValue(sortValue)) {
+            "Param \"sort\" could not be mapped."
         }
+    }
+
+    fun hasRandomSortWithoutSeed(): Boolean {
+        return sort == RandomStableBrowseFilterSort.URL_VALUE
     }
 
     fun buildQueryParams(): String {
         return buildQueryParams {
             add("title" to title)
-            add("chapter" to chapter.takeIf { it != DEFAULT_CHAPTER_FILTER_VALUE })
-            add("year" to year.takeIf { it != DEFAULT_YEAR_FILTER_VALUE })
-            add("sort" to sort.takeIf { it != DEFAULT_SORT_FILTER_VALUE })
+            add("chapter" to chapter.takeIf { it != BrowseFilterChapter.DEFAULT_VALUE })
+            add("year" to year.takeIf { it != BrowseFilterYear.DEFAULT_VALUE })
+            add("sort" to sort
+                .takeIf { it != BrowseFilterSort.DEFAULT_VALUE }
+                ?.let { findByFilterValue(it) }
+                ?.urlValue
+            )
         }
+    }
+
+    private fun findByFilterValue(filterValue: String): BrowseFilterSort? = when {
+        DateDescBrowseFilterSort.filterValue == filterValue -> DateDescBrowseFilterSort
+        DateAscBrowseFilterSort.filterValue == filterValue -> DateAscBrowseFilterSort
+        DurationDescBrowseFilterSort.filterValue == filterValue -> DurationDescBrowseFilterSort
+        DurationAscBrowseFilterSort.filterValue == filterValue -> DurationAscBrowseFilterSort
+        filterValue.startsWith(RandomStableBrowseFilterSort.URL_VALUE) -> {
+            RandomStableBrowseFilterSort.fromFilterValue(filterValue)
+        }
+        else -> null
     }
 
     private fun buildQueryParams(block: MutableList<Pair<String, String?>>.() -> Unit): String {
@@ -40,7 +57,9 @@ data class BrowseFilterOptions(
         return params
             .filter { it.second?.isNotBlank() == true }
             .takeIf { it.isNotEmpty() }
-            ?.joinToString(prefix = "?", separator = "&") { "${it.first}=${it.second}" }
-            ?: ""
+            ?.joinToString(prefix = "?", separator = "&") { (name, value) ->
+                val valueEncoded = URLEncoder.encode(value, StandardCharsets.UTF_8)
+                "${name}=${valueEncoded}"
+            } ?: ""
     }
 }

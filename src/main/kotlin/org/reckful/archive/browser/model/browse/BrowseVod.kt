@@ -6,7 +6,6 @@ data class BrowseVod(
     val date: String,
     val duration: String,
 
-    val vodUrl: String,
     val vodThumbnailUrl: String,
     val primaryChapterThumbnailUrl: String,
 

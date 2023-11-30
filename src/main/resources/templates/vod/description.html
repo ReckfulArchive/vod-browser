@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+
+<body>
+
+<!--/*@thymesVar id="vodDetails" type="org.reckful.archive.browser.model.vod.VodDetails"*/-->
+<th:block th:fragment="vod-description(vodDetails)" th:object="${vodDetails}">
+    <div class="border border-secondary-subtle">
+        <div class="row g-0">
+            <div class="col-12 col-sm-3 ps-3 p-2">
+                <div class="text-body-secondary h-100 d-flex align-items-center"
+                     style="font-size: 14px;"
+                     th:text="*{date}">
+                </div>
+            </div>
+            <div class="col-12 col-sm-9 d-flex justify-content-end p-2">
+                <button type="button" class="btn btn-dark vod-button">Share</button>
+                <a class="btn btn-dark vod-button twitch"
+                   role="button"
+                   th:if="*{#strings.startsWith(externalId, 'twitch:')}"
+                   th:href="*{#strings.replace(externalId, 'twitch:', 'https://twitch.tv/videos/')}"
+                   target="_blank">
+                    Twitch
+                </a>
+                <button type="button"
+                        class="btn btn-dark vod-button report"
+                        data-bs-toggle="modal"
+                        data-bs-target="#report-vod-modal">
+                    Report
+                </button>
+            </div>
+        </div>
+        <div th:if="*{description != null}" class="row g-0 p-2 pt-0">
+            <div class="col-12">
+                <div class="vod-details" th:text="*{description}"></div>
+            </div>
+        </div>
+    </div>
+</th:block>
+
+</body>
+
+</html>

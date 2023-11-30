@@ -51,6 +51,8 @@ dependencies {
     implementation("org.webjars:bootstrap:5.3.2")
     implementation("org.webjars.npm:bootstrap-icons:1.11.1")
     implementation("org.webjars.npm:htmx.org:1.9.8")
+    implementation("org.webjars:jquery:3.7.1")
+    implementation("org.webjars.npm:bootstrap-select:1.14.0-beta3")
 
     // db
     implementation("org.postgresql:postgresql")

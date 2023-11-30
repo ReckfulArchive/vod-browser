@@ -1,12 +1,20 @@
 package org.reckful.archive.browser.service
 
+import org.reckful.archive.browser.entity.VodChapterEntity
+import org.reckful.archive.browser.entity.VodEntity
+import org.reckful.archive.browser.mapper.ChapterMapper
 import org.reckful.archive.browser.model.Page
 import org.reckful.archive.browser.model.browse.*
 import org.reckful.archive.browser.model.db.SortOrder
-import org.reckful.archive.browser.model.db.VodSortOptions
+import org.reckful.archive.browser.model.vod.DateTimeVodSortOption
+import org.reckful.archive.browser.model.vod.DurationVodSortOption
+import org.reckful.archive.browser.model.vod.RandomStableVodSortOption
 import org.reckful.archive.browser.repository.VodRepository
-import org.reckful.archive.browser.util.withMaxLength
+import org.reckful.archive.browser.util.findWithLongestDurationGroupedBy
+import org.reckful.archive.browser.util.formatToDoubleNumber
+import org.reckful.archive.browser.util.formatToHumanReadable
 import org.springframework.stereotype.Service
+import java.time.format.DateTimeFormatter
 
 interface BrowseVodService {
 
@@ -24,17 +32,15 @@ interface BrowseVodService {
         title: String? = null,
         chapterId: Long? = null,
         year: Int? = null,
-        sort: BrowseFilterSort = BrowseFilterSort.DATE_DESC,
+        sort: BrowseFilterSort = DateDescBrowseFilterSort,
         page: Int,
         limit: Int
     ): Page<BrowseVod>
-
-    fun getVodDetailsById(vodId: Long): BrowseVodDetails?
 }
 
 @Service
 class PersistentBrowseVodService(
-    private val browseVodMapperService: BrowseVodMapperService,
+    private val chapterMapper: ChapterMapper,
     private val vodRepository: VodRepository
 ) : BrowseVodService {
 
@@ -49,7 +55,7 @@ class PersistentBrowseVodService(
         ).map {
             BrowseFilterChapter(
                 chapterId = it.chapterId,
-                displayName = it.chapterName.withMaxLength(40),
+                chapterName = it.chapterName,
                 vodCount = it.vodCount
             )
         }
@@ -65,7 +71,7 @@ class PersistentBrowseVodService(
             chapterId = chapterId
         ).map {
             BrowseFilterYear(
-                year = it.year,
+                yearValue = it.year,
                 vodCount = it.vodCount
             )
         }
@@ -79,14 +85,16 @@ class PersistentBrowseVodService(
         page: Int,
         limit: Int
     ): Page<BrowseVod> {
-        val sortBy = when(sort) {
-            BrowseFilterSort.DATE_DESC, BrowseFilterSort.DATE_ASC -> VodSortOptions.DATETIME
-            BrowseFilterSort.DURATION_DESC, BrowseFilterSort.DURATION_ASC -> VodSortOptions.DURATION
+        val sortBy = when (sort) {
+            DateDescBrowseFilterSort, DateAscBrowseFilterSort -> DateTimeVodSortOption
+            DurationDescBrowseFilterSort, DurationAscBrowseFilterSort -> DurationVodSortOption
+            is RandomStableBrowseFilterSort -> RandomStableVodSortOption(sort.seed)
         }
 
-        val sortOrder = when(sort) {
-            BrowseFilterSort.DATE_DESC, BrowseFilterSort.DURATION_DESC -> SortOrder.DESC
-            BrowseFilterSort.DATE_ASC, BrowseFilterSort.DURATION_ASC -> SortOrder.ASC
+        val sortOrder = when (sort) {
+            DateDescBrowseFilterSort, DurationDescBrowseFilterSort -> SortOrder.DESC
+            DateAscBrowseFilterSort, DurationAscBrowseFilterSort -> SortOrder.ASC
+            is RandomStableBrowseFilterSort -> SortOrder.ASC
         }
 
         val vods = vodRepository.findVods(
@@ -102,33 +110,51 @@ class PersistentBrowseVodService(
 
         val vodIds = vods.map { it.id }
         val chapters = vodRepository.findVodChapters(vodIds).groupBy { it.vodId }
-        val mirrors = vodRepository.findVodMirrors(vodIds).groupBy { it.vodId }
 
         val pageVods = vods.map {
-            browseVodMapperService.mapToDTO(
-                vod = it,
+            it.toBrowseVod(
                 chapters = chapters[it.id] ?: emptyList(),
-                mirrors = mirrors[it.id] ?: emptyList()
             )
         }
         return Page(
             data = pageVods,
-            page = page,
+            pageNum = page,
             limit = limit
         )
     }
 
-    override fun getVodDetailsById(vodId: Long): BrowseVodDetails? {
-        val vod = vodRepository.findById(vodId) ?: return null
-        val vodMirrors = vodRepository.findVodMirrors(listOf(vodId))
-        return BrowseVodDetails(
-            id = vod.id,
-            title = vod.title,
-            description = vod.description,
-            url = browseVodMapperService.getArchiveVideoFileUrl(vodMirrors),
-            thumbnailUrl = vod.thumbnailUrl,
-            previewSpriteUrl = vod.previewSpriteUrl
+    private fun VodEntity.toBrowseVod(chapters: List<VodChapterEntity>): BrowseVod {
+        val chaptersWithDuration = chapterMapper.withDuration(
+            chapters = chapters,
+            vodDuration = this.duration
+        ) { chapter, duration ->
+            BrowseVodChapter(
+                name = chapter.name,
+                thumbnailUrl = chapter.thumbnailUrl,
+                duration = duration.formatToHumanReadable(),
+                startTimeSec = chapter.startTimeSec.toInt()
+            )
+        }
+
+        val primaryChapterThumbnailUrl = chaptersWithDuration
+            .findWithLongestDurationGroupedBy { it.name }
+            ?.thumbnailUrl
+            ?: DEFAULT_CHAPTER_THUMBNAIL_URL
+
+        return BrowseVod(
+            id = this.id,
+            title = this.title,
+            date = this.dateTime.format(DateTimeFormatter.ISO_LOCAL_DATE),
+            duration = this.duration.formatToDoubleNumber(),
+            vodThumbnailUrl = this.thumbnailUrl,
+            primaryChapterThumbnailUrl = primaryChapterThumbnailUrl,
+            chapters = chaptersWithDuration.map { it.data }
         )
+    }
+
+    private companion object {
+        private const val DEFAULT_CHAPTER_THUMBNAIL_URL =
+            "https://reckfularchive.github.io/twitch-metadata/files/thumbnails/chapters/not_found.jpg"
     }
 }
 

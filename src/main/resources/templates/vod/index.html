@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en" data-bs-theme="auto">
+
+<!--/*@thymesVar id="vodDetails" type="org.reckful.archive.browser.model.vod.VodDetails"*/-->
+<head th:replace="~{base :: header(~{::title},~{this::link})}">
+    <title th:text="${vodDetails.title} + ' - Reckful Archive'"></title>
+
+    <link rel="stylesheet" th:href="@{/css/vod.css}" type="text/css"/>
+    <link rel="stylesheet" th:href="@{/videojs/skins/treso/videojs.min.css}" type="text/css"/>
+</head>
+
+
+<body th:with="theme=${T(org.reckful.archive.browser.model.vod.VodTheme).random()}"
+      th:styleappend="|background-image: url(${theme.getBackgroundImgPath()});|">
+
+<div id="header-padding" class="d-none d-lg-block" th:styleappend="|padding-bottom: ${theme.getHeaderSizePx()}px;|"></div>
+
+<!--/*@thymesVar id="vodDetails" type="org.reckful.archive.browser.model.vod.VodDetails"*/-->
+<!--/*@thymesVar id="startTimeSeconds" type="kotlin.Int"*/-->
+<div id="container" class="container bg-body-secondary px-4 rounded-top"
+     th:assert="${vodDetails != null}"
+     th:object="${vodDetails}">
+
+    <div class="row g-0 pt-4">
+        <div id="vod-column" class="col-md-8 col-sm-12">
+
+            <a role="button"
+               class="btn btn-link p-0"
+               href="/">
+                <img id="theme-header-img"
+                     class="img-fluid pb-3 d-none d-md-block"
+                     th:src="${theme.getHeaderImgPath()}"
+                     alt="Theme header image">
+            </a>
+
+            <h2 class="text-break vod-title pt-1" th:text="${vodDetails.title}"></h2>
+
+            <div class="video-player">
+                <video th:id="|video-*{id}|"
+                       th:videoId="*{id}"
+                       th:startTime="${startTimeSeconds}"
+                       class="video-js vjs-16-9"
+                       controls
+                       preload="auto"
+                       playsinline
+                       th:poster="*{thumbnailUrl}"
+                       th:slideImage="*{previewSpriteUrl}">
+
+                    <source th:src="*{url}" type="video/mp4"/>
+                    <track kind="chapters" th:src="|/vod/*{id}/chapters.vtt|" srclang="en">
+                </video>
+            </div>
+
+            <div class="pt-3" th:insert="~{vod/description :: vod-description(vodDetails=${vodDetails})}"></div>
+        </div>
+        <div id="chat"
+             class="col-md-4 ps-3 d-none d-md-block"
+             th:with="isDevMode=${#arrays.contains(@environment.activeProfiles, 'dev')}">
+
+            <div th:if="${isDevMode}" class="h-100 w-100" style="background-color: darkgray;"></div>
+            <iframe th:unless="${isDevMode}"
+                    class="h-100 w-100"
+                    src="https://www.twitch.tv/embed/reckfulrerun/chat?parent=localhost">
+            </iframe>
+        </div>
+    </div>
+
+    <div id="suggestions" class="pb-3">
+        <th:block th:replace="~{ vod/suggestion :: nextByDateContainer(vodId=${vodDetails.id}) }"></th:block>
+        <th:block th:replace="~{ vod/suggestion :: moreLikeThis(vodId=${vodDetails.id}) }"></th:block>
+    </div>
+</div>
+
+<th:block th:replace="~{vod/report :: modal(vodDetails=${vodDetails})}"></th:block>
+
+<th:block th:replace="~{base :: body-cellar(~{::script})}">
+    <!--/* VideoJS and Nuevo scripts and plugins */-->
+    <script th:src="@{/videojs/video.min.js}"></script>
+    <script th:src="@{/videojs/nuevo.min.js}"></script>
+    <script src="https://www.gstatic.com/cv/js/sender/v1/cast_sender.js?loadCastFramework=1"></script>
+    <script th:src="@{/videojs/plugins/videojs.hotkeys.min.js}"></script>
+    <script th:src="@{/videojs/plugins/videojs-chromecast.min.js}"></script>
+    <script th:src="@{/js/vod.js}"></script>
+</th:block>
+
+</body>
+</html>
