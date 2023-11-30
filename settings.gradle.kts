@@ -16,3 +16,7 @@ pluginManagement {
         kotlin("plugin.spring") version kotlin_version
     }
 }
+
+plugins {
+    id("org.gradle.toolchains.foojay-resolver-convention") version "0.7.0"
+}
