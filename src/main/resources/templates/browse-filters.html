@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+
+<body>
+
+<form id="form-filters" th:fragment="form" class="row g-3 pb-5">
+
+    <!-- Title -->
+    <div class="col-sm-12 col-md-12 col-lg-5 col-xxl-8">
+        <label for="title" class="form-label">
+            Title
+        </label>
+
+        <!--/*@thymesVar id="selectedTitle" type="kotlin.String"*/-->
+        <input id="title"
+               name="title"
+               type="search"
+               class="form-control"
+               hx-get="/"
+               hx-include="#form-filters *"
+               hx-trigger="input changed delay:500ms, title"
+               hx-target="#search-results"
+               th:value="${selectedTitle}">
+    </div>
+
+    <!-- Chapter -->
+    <div class="col-sm-12 col-md-6 col-lg-3 col-xxl-2">
+        <span id="form-filters-chapter" th:fragment="form-filters-chapter" hx-swap-oob="true">
+            <label for="chapter" class="form-label">
+                Chapter
+            </label>
+            <select id="chapter"
+                    name="chapter"
+                    class="form-control selectpicker"
+                    data-live-search="true"
+                    data-style="btn-light dropdown-chapter-button"
+                    data-size="10"
+                    hx-get="/"
+                    hx-include="#form-filters *"
+                    hx-target="#search-results">
+
+                <option value="all">All</option>
+
+                <!--/*@thymesVar id="chapterFilters" type="kotlin.collections.List<org.reckful.archive.browser.model.browse.BrowseFilterChapter>"*/-->
+                <!--/*@thymesVar id="selectedChapterValue" type="org.reckful.archive.browser.model.browse.BrowseFilterChapter"*/-->
+                <option th:each="chapterFilter : ${chapterFilters}"
+                        th:value="${chapterFilter.getChapterId()}"
+                        th:selected="${chapterFilter.getChapterId() == selectedChapterValue}"
+                        th:text="${chapterFilter.getDisplayName()}"
+                        th:data-subtext="${chapterFilter.getVodCount()}">
+            </select>
+        </span>
+    </div>
+
+    <!-- Year -->
+    <div class="col-sm-6 col-md-3 col-lg-2 col-xxl-1">
+        <span id="form-filters-year" th:fragment="form-filters-year" hx-swap-oob="true">
+            <label for="year" class="form-label">
+                Year
+            </label>
+            <select id="year"
+                    name="year"
+                    class="form-control selectpicker"
+                    data-style="btn-light dropdown-chapter-button"
+                    hx-get="/"
+                    hx-include="#form-filters *"
+                    hx-target="#search-results">
+
+                <option value="all">All</option>
+
+                <!--/*@thymesVar id="yearFilters" type="kotlin.collections.List<org.reckful.archive.browser.model.browse.BrowseFilterYear>"*/-->
+                <!--/*@thymesVar id="selectedYearValue" type="kotlin.Int"*/-->
+                <option th:each="yearFilter : ${yearFilters}"
+                        th:value="${yearFilter.getYear()}"
+                        th:selected="${yearFilter.getYear() == selectedYearValue}"
+                        th:text="${yearFilter.getYear()}"
+                        th:data-subtext="${yearFilter.getVodCount()}">
+                </option>
+            </select>
+        </span>
+    </div>
+
+    <!-- Sort by -->
+    <div class="col-sm-6 col-md-3 col-lg-2 col-xxl-1">
+        <label for="sort" class="form-label">
+            Sort by
+        </label>
+        <select id="sort"
+                name="sort"
+                class="form-control selectpicker"
+                data-style="btn-light dropdown-chapter-button"
+                hx-get="/"
+                hx-include="#form-filters *"
+                hx-target="#search-results">
+
+            <!--/*@thymesVar id="sortFilters" type="kotlin.collections.List<org.reckful.archive.browser.model.browse.BrowseFilterSort>"*/-->
+            <!--/*@thymesVar id="selectedSortFilter" type="org.reckful.archive.browser.model.browse.BrowseFilterSort"*/-->
+            <option th:each="sortOption : ${sortFilters}"
+                    th:value="${sortOption.getFilterValue()}"
+                    th:data-icon="${sortOption.getBootstrapIcon()}"
+                    th:selected="${sortOption.getFilterValue() == selectedSortValue}"
+                    th:text="${sortOption.getDisplayName()}">
+            </option>
+        </select>
+    </div>
+</form>
+
+</body>
+
+</html>

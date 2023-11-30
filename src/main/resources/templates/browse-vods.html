@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+
+<body>
+
+<div th:fragment="search-results" id="search-results">
+    <div class="row row-cols-xxl-5 row-cols-xl-4 row-cols-lg-3 row-cols-md-2 row-cols-sm-2 row-cols-1 g-4">
+        <!--/*@thymesVar id="vod" type="org.reckful.archive.browser.model.browse.BrowseVod"*/-->
+        <!--/*@thymesVar id="page" type="org.reckful.archive.browser.model.Page<org.reckful.archive.browser.model.browse.BrowseVod>"*/-->
+        <div class="col"
+             th:fragment="vods"
+             th:each="vod,iterStat : ${page.getData()}"
+             th:with="isLastPageElement=${iterStat.last && page.getHasNext()}"
+             th:attrappend="
+             hx-get=${isLastPageElement}?'/page?page=' + ${page.getPage() + 1} + '&limit=' + ${page.getLimit()},
+             hx-include=${isLastPageElement}?'*',
+             hx-trigger=${isLastPageElement}?'revealed',
+             hx-swap=${isLastPageElement}?'afterend'"
+             hx-indicator="#request-indicator-spinner">
+
+            <div class="card shadow-sm">
+
+                <!-- VOD Card thumbnail with duration and date badges -->
+                <div class="img-badge-container vod-thumbnail">
+                    <button type="button"
+                            class="btn btn-link p-0"
+                            th:attr="hx-get=@{/browse/vod/{id}(id=${vod.getId()})}"
+                            hx-target="#browse-modal-vod-container"
+                            hx-trigger="click"
+                            data-bs-toggle="modal"
+                            data-bs-target="#browse-modal-vod-container">
+
+                        <img class="card-img-top img-fluid"
+                             th:src="${vod.getVodThumbnailUrl()}"
+                             alt="Vod thumbnail"/>
+                    </button>
+                    <div class="badge badge-top-left text-bg-dark" th:text="${vod.getDuration()}"></div>
+                    <div class="badge badge-bottom-right text-bg-dark" th:text="${vod.getDate()}"></div>
+                </div>
+
+                <!-- VOD Card body -->
+                <div class="card-body row py-2">
+
+                    <!-- Left column, primary chapter thumbnail-->
+                    <div class="col-auto ps-1 pe-2">
+                        <img th:src="${vod.getPrimaryChapterThumbnailUrl()}"
+                             alt="Primary chapter thumbnail"
+                             width="41"
+                             height="57">
+                    </div>
+
+                    <!-- Right column, title & chapters info -->
+                    <!-- for min-width: 0 explanation, see https://github.com/twbs/bootstrap/issues/37922-->
+                    <div class="col justify-content-evenly" style="min-width: 0">
+
+                        <!-- Title with a clickable link -->
+                        <div class="row">
+                            <h6 class="p-0 text-truncate fw-semibold">
+                                <a th:href="${vod.getVodUrl()}"
+                                   target="_blank"
+                                   th:title="${vod.getTitle()}"
+                                   th:text="${vod.getTitle()}"
+                                   class="link-body-emphasis
+                                  link-underline
+                                  link-underline-opacity-0
+                                  link-underline-opacity-75-hover">
+                                </a>
+                            </h6>
+                        </div>
+
+                        <!-- Chapters dropdown -->
+                        <div class="row" th:switch="${vod.getChapters().size()}">
+
+                            <!-- no chapters -->
+                            <div th:case="0" class="px-0"></div>
+
+                            <!-- a single chapter, show only the name -->
+                            <div th:case="1"
+                                 class="px-0 text-body-secondary"
+                                 th:text="${vod.getChapters().get(0).getName()}">
+                            </div>
+
+                            <!-- multiple chapters -->
+                            <div th:case="*"
+                                 class="btn-group dropup px-0"
+                                 style="max-width: 150px;">
+
+                                <!-- Chapters button with a size badge -->
+                                <button type="button"
+                                        class="btn btn-sm btn-light dropdown-toggle dropdown-chapter-button"
+                                        data-bs-toggle="dropdown"
+                                        aria-expanded="false">
+
+                                    <i class="bi bi-list-task"></i>
+                                    <span class="px-1">Chapters</span>
+                                    <span class="badge text-bg-info-subtle"
+                                          th:text="${vod.getChapters().size()}">
+                                    </span>
+                                </button>
+                                <!-- Chapters button dropdown menu -->
+                                <div class="dropdown-menu dropdown-chapter-container overflow-auto"
+                                     style="min-width: 250px; max-width: 350px; min-height: 65px; max-height: 170px;">
+
+                                    <a th:each="chapter : ${vod.getChapters()}"
+                                         class="py-1 dropdown-item dropdown-chapter-item"
+                                         hx-target="#browse-modal-vod-container"
+                                         hx-trigger="click"
+                                         data-bs-toggle="modal"
+                                         data-bs-target="#browse-modal-vod-container"
+                                         th:hx-get="'/browse/vod/' + ${vod.getId()} + '?start=' + ${chapter.getStartTimeSec()}">
+                                        <div class="col-auto">
+                                            <img th:src="${chapter.getThumbnailUrl()}"
+                                                 width="40"
+                                                 height="53"
+                                                 alt="Chapter thumbnail"/>
+                                        </div>
+                                        <div class="col px-2">
+                                            <div th:text="${chapter.getName()}"></div>
+                                            <div class="text-body-secondary"
+                                                 th:text="${chapter.getDuration()}">
+                                            </div>
+                                        </div>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="request-indicator-spinner" class="htmx-indicator row w-100 justify-content-center py-5">
+            <div class="spinner-border" style="width: 5rem; height: 5rem;" role="status">
+                <span class="visually-hidden">Loading...</span>
+            </div>
+        </div>
+    </div>
+</div>
+
+</body>
+
+</html>

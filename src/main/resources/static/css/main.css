@@ -1,0 +1,46 @@
+.text-bg-info-subtle {
+    color: black;
+    background-color: #b5ccff;
+}
+
+/*<editor-fold desc="HTMX request indicator styling">*/
+.htmx-indicator {
+    display: none;
+}
+
+.htmx-request .htmx-indicator, .htmx-request.htmx-indicator {
+    display: flex;
+}
+/*</editor-fold>*/
+
+/*<editor-fold desc="Theme switcher buttons styling">*/
+.bi {
+    vertical-align: -.125em;
+    fill: currentColor;
+}
+
+.btn-bd-primary {
+    --bd-violet-bg: #98aaff;
+    --bd-violet-rgb: 152, 170, 255;
+
+    --bs-btn-font-weight: 600;
+    --bs-btn-color: var(--bs-white);
+    --bs-btn-bg: var(--bd-violet-bg);
+    --bs-btn-border-color: var(--bd-violet-bg);
+    --bs-btn-hover-color: var(--bs-white);
+    --bs-btn-hover-bg: #7888d4;
+    --bs-btn-hover-border-color: #7888d4;
+    --bs-btn-focus-shadow-rgb: var(--bd-violet-rgb);
+    --bs-btn-active-color: var(--bs-btn-hover-color);
+    --bs-btn-active-bg: #5a67a0;
+    --bs-btn-active-border-color: #5a67a0;
+}
+
+.bd-mode-toggle {
+    z-index: 1500;
+}
+
+.bd-mode-toggle .dropdown-menu .active .bi {
+    display: block !important;
+}
+/*</editor-fold>*/
