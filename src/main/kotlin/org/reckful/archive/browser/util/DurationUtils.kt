@@ -39,7 +39,7 @@ private fun Int.formatToDoubleDigit(): String {
     return if (this > 9) this.toString() else "0$this"
 }
 
-internal data class WithDuration<T>(
+data class WithDuration<T>(
     val data: T,
     val duration: Duration
 )

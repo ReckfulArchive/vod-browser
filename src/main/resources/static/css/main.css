@@ -3,6 +3,11 @@
     background-color: #b5ccff;
 }
 
+.form-control.disabled {
+    background-color: var(--bs-secondary-bg);
+    opacity: 1;
+}
+
 /*<editor-fold desc="HTMX request indicator styling">*/
 .htmx-indicator {
     display: none;
@@ -43,4 +48,32 @@
 .bd-mode-toggle .dropdown-menu .active .bi {
     display: block !important;
 }
+/*</editor-fold>*/
+
+/*<editor-fold desc="Floating image badge styles">*/
+.img-badge-container {
+    position: relative;
+}
+
+.img-badge-container img {
+    display: block;
+}
+
+.img-badge-container .badge {
+    position: absolute;
+    font-size: 16px;
+    font-weight: normal;
+    opacity: 93%;
+}
+
+.img-badge-container .badge-top-left {
+    top: 5px;
+    left: 7px;
+}
+
+.img-badge-container .badge-bottom-right {
+    bottom: 5px;
+    right: 7px;
+}
+
 /*</editor-fold>*/

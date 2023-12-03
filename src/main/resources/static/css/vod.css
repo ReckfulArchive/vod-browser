@@ -1,0 +1,42 @@
+body {
+    background-color: black;
+    background-position: top center;
+    background-repeat: no-repeat;
+}
+
+/* The size is based on the theme background sizing */
+.container {
+    max-width: 980px;
+}
+
+.vod-title {
+    font-size: 32px;
+    font-family: "Korolev-Bold", "HelveticaNeue-CondensedBold", "ArialNarrow-Bold", "Helvetica Neue", Helvetica, Arial, sans-serif;
+    line-height: 1.29;
+}
+
+.vod-details {
+    font: 12px "Helvetica Neue", Helvetica, Arial, sans-serif
+}
+
+.vod-button {
+    color: #fff;
+    background-color: #807d7d;
+    border-color: var(--bs-border-color);
+
+    --bs-btn-padding-y: .25rem;
+    --bs-btn-padding-x: .5rem;
+    --bs-btn-font-size: .75rem;
+}
+
+.vod-button.report {
+    background-color: #a43939;
+}
+
+.vod-button.twitch {
+    background-color: #6a4e9e;
+}
+
+.img-badge-container .badge {
+    font-size: 13px;
+}

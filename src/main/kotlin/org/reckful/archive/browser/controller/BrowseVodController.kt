@@ -4,17 +4,12 @@ import io.github.wimdeblauwe.htmx.spring.boot.mvc.HtmxRequest
 import io.github.wimdeblauwe.htmx.spring.boot.mvc.HtmxResponse
 import io.github.wimdeblauwe.htmx.spring.boot.mvc.HxRequest
 import org.reckful.archive.browser.dto.BrowseFilterOptions
-import org.reckful.archive.browser.model.browse.BrowseFilterSort
+import org.reckful.archive.browser.model.browse.*
 import org.reckful.archive.browser.service.BrowseVodService
 import org.springframework.stereotype.Controller
 import org.springframework.ui.Model
 import org.springframework.web.bind.annotation.GetMapping
-import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.RequestParam
-
-const val DEFAULT_CHAPTER_FILTER_VALUE = "all"
-const val DEFAULT_YEAR_FILTER_VALUE = "all"
-const val DEFAULT_SORT_FILTER_VALUE = "date_desc"
 
 const val DEFAULT_LIMIT_PARAM_VALUE = 30
 
@@ -28,12 +23,21 @@ class BrowseVodController(
         filterOptions: BrowseFilterOptions,
         model: Model
     ): String {
-        val selectedTitle = filterOptions.parseTitle()
-        val selectedChapterId = filterOptions.parseChapterId()
-        val selectedYear = filterOptions.parseYear()
-        val selectedSort = filterOptions.parseSort()
+        // user requests should not contain the seed, it's an internal detail,
+        // so this request is not expected to have any and we need to generate it for the filter
+        val sortSeed = RandomStableBrowseFilterSort.randomSeed()
 
-        model.addAttribute("selectedTitle", filterOptions.title)
+        val validatedFilterOptions = when {
+            filterOptions.hasRandomSortWithoutSeed() -> filterOptions.copy(
+                sort = RandomStableBrowseFilterSort.createFilterValue(sortSeed)
+            )
+            else -> filterOptions
+        }
+
+        val selectedTitle = validatedFilterOptions.parseTitle()
+        val selectedChapterId = validatedFilterOptions.parseChapterId()
+        val selectedYear = validatedFilterOptions.parseYear()
+        val selectedSort = validatedFilterOptions.parseSort()
 
         val vodsPage = browseVodService.getPage(
             title = selectedTitle,
@@ -50,16 +54,13 @@ class BrowseVodController(
             year = selectedYear
         )
         model.addAttribute("chapterFilters", chapterOptions)
-        model.addAttribute("selectedChapterValue", selectedChapterId ?: DEFAULT_CHAPTER_FILTER_VALUE)
 
         val yearValues = browseVodService.getYearFilterOptions(title = selectedTitle, chapterId = selectedChapterId)
         model.addAttribute("yearFilters", yearValues)
-        model.addAttribute("selectedYearValue", selectedYear ?: DEFAULT_YEAR_FILTER_VALUE)
 
-        model.addAttribute("sortFilters", BrowseFilterSort.entries.toList())
-        model.addAttribute("selectedSortValue", selectedSort.filterValue)
+        model.addAttribute("sortFilters", getSortFilters(randomSortSeed = sortSeed))
 
-        return "browse"
+        return "browse/index"
     }
 
     @HxRequest
@@ -85,7 +86,7 @@ class BrowseVodController(
             limit = limit
         )
         model.addAttribute("page", vodsPage)
-        return "browse-vods :: vods"
+        return "browse/vods :: vods"
     }
 
     @GetMapping("/")
@@ -114,16 +115,14 @@ class BrowseVodController(
             year = selectedYear
         )
         model.addAttribute("chapterFilters", chapterOptions)
-        model.addAttribute("selectedChapterValue", selectedChapterId ?: DEFAULT_CHAPTER_FILTER_VALUE)
 
         val yearValues = browseVodService.getYearFilterOptions(title = selectedTitle, chapterId = selectedChapterId)
         model.addAttribute("yearFilters", yearValues)
-        model.addAttribute("selectedYearValue", selectedYear ?: DEFAULT_YEAR_FILTER_VALUE)
 
         return HtmxResponse.builder()
-            .view("browse-vods :: search-results")
-            .view("browse-filters :: form-filters-chapter")
-            .view("browse-filters :: form-filters-year")
+            .view("browse/vods :: search-results")
+            .view("browse/filters :: form-filters-chapter")
+            .view("browse/filters :: form-filters-year")
             .triggerAfterSwap("selectpicker-render")
             .pushFilterOptionsUrl(filterOptions)
             .build()
@@ -152,11 +151,10 @@ class BrowseVodController(
 
         val yearValues = browseVodService.getYearFilterOptions(title = selectedTitle, chapterId = selectedChapterId)
         model.addAttribute("yearFilters", yearValues)
-        model.addAttribute("selectedYearValue", selectedYear ?: DEFAULT_YEAR_FILTER_VALUE)
 
         return HtmxResponse.builder()
-            .view("browse-vods :: search-results")
-            .view("browse-filters :: form-filters-year")
+            .view("browse/vods :: search-results")
+            .view("browse/filters :: form-filters-year")
             .triggerAfterSwap("selectpicker-render")
             .pushFilterOptionsUrl(filterOptions)
             .build()
@@ -188,11 +186,10 @@ class BrowseVodController(
             year = selectedYear
         )
         model.addAttribute("chapterFilters", chapterOptions)
-        model.addAttribute("selectedChapterValue", selectedChapterId ?: DEFAULT_CHAPTER_FILTER_VALUE)
 
         return HtmxResponse.builder()
-            .view("browse-vods :: search-results")
-            .view("browse-filters :: form-filters-chapter")
+            .view("browse/vods :: search-results")
+            .view("browse/filters :: form-filters-chapter")
             .triggerAfterSwap("selectpicker-render")
             .pushFilterOptionsUrl(filterOptions)
             .build()
@@ -216,28 +213,20 @@ class BrowseVodController(
         model.addAttribute("page", vodsPage)
 
         return HtmxResponse.builder()
-            .view("browse-vods :: search-results")
+            .view("browse/vods :: search-results")
             .triggerAfterSwap("selectpicker-render")
             .pushFilterOptionsUrl(filterOptions)
             .build()
     }
 
-    @HxRequest
-    @GetMapping("/browse/vod/{vodId}")
-    fun vod(
-        @PathVariable("vodId") vodId: Long,
-        @RequestParam("start", required = false) startTimeSeconds: Int?,
-        model: Model
-    ): HtmxResponse {
-        val vodDetails = requireNotNull(browseVodService.getVodDetailsById(vodId)) {
-            "Unable to find a vod with id: $vodId"
-        }
-        model.addAttribute("vodDetails", vodDetails)
-        model.addAttribute("startTimeSeconds", startTimeSeconds)
-        return HtmxResponse.builder()
-            .view("browse-modal-vod :: modal")
-            .triggerAfterSettle("browse-modal-vod-settled")
-            .build()
+    private fun getSortFilters(randomSortSeed: Int): List<BrowseFilterSort> {
+        return listOf(
+            DateDescBrowseFilterSort,
+            DateAscBrowseFilterSort,
+            DurationDescBrowseFilterSort,
+            DurationAscBrowseFilterSort,
+            RandomStableBrowseFilterSort(randomSortSeed)
+        )
     }
 }
 

@@ -7,9 +7,8 @@ import org.reckful.archive.browser.entity.VodChapterEntity
 import org.reckful.archive.browser.entity.VodEntity
 import org.reckful.archive.browser.entity.VodMirrorEntity
 import org.reckful.archive.browser.model.db.SortOrder
-import org.reckful.archive.browser.model.db.VodCountByChapter
-import org.reckful.archive.browser.model.db.VodCountByYear
-import org.reckful.archive.browser.model.db.VodSortOptions
+import org.reckful.archive.browser.model.vod.*
+import org.springframework.jdbc.core.RowMapper
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate
 import org.springframework.stereotype.Repository
@@ -131,15 +130,16 @@ class JdbcTemplateVodRepository(
         likeTitle: String?,
         chapterId: Long?,
         year: Int?,
-        sortBy: VodSortOptions,
+        sortBy: VodSortOption,
         sortOrder: SortOrder,
         page: Int,
         limit: Int,
     ): List<VodEntity> {
+        val sortValue = sortBy.value()
         val sql = buildString(450) {
             appendLine(
                 "SELECT DISTINCT vod.id, vod.external_id, vod.title, vod.thumbnail_url, " +
-                        "vod.upload_ts, vod.duration_sec, vod.description, vod.preview_sprite_url"
+                        "vod.upload_ts, vod.duration_sec, vod.description, vod.preview_sprite_url, $sortValue"
             )
             appendLine("FROM vod")
             if (playlistIds.isNotEmpty()) {
@@ -162,7 +162,7 @@ class JdbcTemplateVodRepository(
             if (chapterId != null) {
                 appendLine("AND vod_chapters.chapter_id = :chapterId")
             }
-            appendLine("ORDER BY ${sortBy.toColumnName()} ${sortOrder.asSql()}, id")
+            appendLine("ORDER BY $sortValue ${sortOrder.asSql()}, id")
             appendLine("LIMIT :limit OFFSET :offset")
         }
 
@@ -174,24 +174,14 @@ class JdbcTemplateVodRepository(
             .addValue("limit", limit)
             .addValue("offset", (page - 1) * limit)
 
-        return jdbcTemplate.query(sql, params) { rs, _ ->
-            VodEntity(
-                id = rs.getLong(1),
-                externalId = rs.getString(2),
-                title = rs.getString(3),
-                thumbnailUrl = rs.getString(4),
-                dateTime = rs.getTimestamp(5).toLocalDateTime(),
-                duration = Duration.ofSeconds(rs.getLong(6)),
-                description = rs.getString(7),
-                previewSpriteUrl = rs.getString(8),
-            )
-        }
+        return jdbcTemplate.query(sql, params, ROW_MAPPER_VOD_ENTITY)
     }
 
-    private fun VodSortOptions.toColumnName(): String {
+    private fun VodSortOption.value(): String {
         return when (this) {
-            VodSortOptions.DATETIME -> "vod.upload_ts"
-            VodSortOptions.DURATION -> "vod.duration_sec"
+            DateTimeVodSortOption -> "vod.upload_ts"
+            DurationVodSortOption -> "vod.duration_sec"
+            is RandomStableVodSortOption -> "hashint8(vod.id + ${this.seed})"
         }
     }
 
@@ -250,5 +240,62 @@ class JdbcTemplateVodRepository(
             this.addValue(name, values)
         }
         return this
+    }
+
+    override fun insertReport(vodId: Long, type: String, message: String) {
+        @Language("SQL")
+        val sql = "INSERT INTO vod_reports(vod_id, type, message) VALUES (:vod_id, :type, :message);"
+
+        jdbcTemplate.update(
+            sql, mapOf(
+                "vod_id" to vodId,
+                "type" to type,
+                "message" to message
+            )
+        )
+    }
+
+    override fun findNextByDate(vodId: Long, playlistIds: List<Long>, page: Int, limit: Int): List<VodEntity> {
+        val sql = buildString {
+            appendLine("WITH selected_vod AS (SELECT upload_ts FROM vod WHERE id = :vod_id)")
+            appendLine(
+                "SELECT DISTINCT vod.id, vod.external_id, vod.title, vod.thumbnail_url, " +
+                        "vod.upload_ts, vod.duration_sec, vod.description, vod.preview_sprite_url"
+            )
+            appendLine("FROM vod")
+            if (playlistIds.isNotEmpty()) {
+                appendLine("INNER JOIN vod_playlist_items ON vod_playlist_items.vod_id = vod.id")
+            }
+            appendLine("WHERE upload_ts > (SELECT upload_ts FROM selected_vod)")
+            if (playlistIds.isNotEmpty()) {
+                appendLine("AND vod_playlist_items.playlist_id IN (:playlistIds)")
+            }
+            appendLine("ORDER BY upload_ts, id desc")
+            appendLine("LIMIT :limit OFFSET :offset")
+        }
+
+        val params = MapSqlParameterSource()
+            .addValue("vod_id", vodId)
+            .addValues("playlistIds", playlistIds)
+            .addValue("limit", limit)
+            .addValue("offset", (page - 1) * limit)
+
+        return jdbcTemplate.query(sql, params, ROW_MAPPER_VOD_ENTITY)
+    }
+
+    private companion object {
+        val ROW_MAPPER_VOD_ENTITY =
+            RowMapper<VodEntity> { rs, rowNum ->
+                VodEntity(
+                    id = rs.getLong("id"),
+                    externalId = rs.getString("external_id"),
+                    title = rs.getString("title"),
+                    thumbnailUrl = rs.getString("thumbnail_url"),
+                    dateTime = rs.getTimestamp("upload_ts").toLocalDateTime(),
+                    duration = Duration.ofSeconds(rs.getLong("duration_sec")),
+                    description = rs.getString("description"),
+                    previewSpriteUrl = rs.getString("preview_sprite_url"),
+                )
+            }
     }
 }
