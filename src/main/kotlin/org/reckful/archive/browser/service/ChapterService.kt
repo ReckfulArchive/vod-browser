@@ -43,4 +43,9 @@ class ChapterService(
             )
         }
     }
+
+    companion object {
+        const val DEFAULT_CHAPTER_THUMBNAIL_URL =
+            "https://reckfularchive.github.io/twitch-metadata/files/thumbnails/chapters/not_found.jpg"
+    }
 }

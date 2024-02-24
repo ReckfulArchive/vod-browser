@@ -283,6 +283,26 @@ class JdbcTemplateVodRepository(
         return jdbcTemplate.query(sql, params, ROW_MAPPER_VOD_ENTITY)
     }
 
+    override fun findByArchiveFileName(fileName: String): List<VodEntity> {
+        @Language("SQL")
+        val sql = """
+            SELECT vod.id, vod.external_id, vod.title, vod.thumbnail_url, vod.upload_ts, 
+                   vod.duration_sec, vod.description, vod.preview_sprite_url
+            FROM vod
+            WHERE id IN (SELECT vod_id
+                         FROM vod_mirrors
+                         WHERE type = 'ARCHIVE_FILE_PATH'
+                           AND url like :fileName)
+            AND is_public = true
+            LIMIT 50;
+        """.trimIndent()
+
+        val params = MapSqlParameterSource()
+            .addValue("fileName", "%$fileName%")
+
+        return jdbcTemplate.query(sql, params, ROW_MAPPER_VOD_ENTITY)
+    }
+
     private companion object {
         val ROW_MAPPER_VOD_ENTITY =
             RowMapper<VodEntity> { rs, rowNum ->

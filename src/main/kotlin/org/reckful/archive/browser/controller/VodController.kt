@@ -1,12 +1,14 @@
 package org.reckful.archive.browser.controller
 
 import io.github.wimdeblauwe.htmx.spring.boot.mvc.HtmxResponse
+import org.reckful.archive.browser.dto.VodDTO
 import org.reckful.archive.browser.service.ChapterService
 import org.reckful.archive.browser.service.VodService
 import org.springframework.stereotype.Controller
 import org.springframework.ui.Model
 import org.springframework.web.bind.annotation.*
 
+// TODO extract into a separate module?
 @Controller
 @RequestMapping("/vod")
 class VodController(
@@ -50,5 +52,14 @@ class VodController(
         @PathVariable("vodId") vodId: Long
     ): String {
         return chapterService.getChaptersWebVttFile(vodId)
+    }
+
+    @GetMapping("/rest/archive", produces = ["application/json"])
+    @ResponseBody
+    fun find(
+        @RequestParam("fileName", required = false) archiveFileName: String? = null
+    ): List<VodDTO> {
+        if (archiveFileName == null) return emptyList()
+        return vodService.findArchiveVodsByFileName(archiveFileName)
     }
 }

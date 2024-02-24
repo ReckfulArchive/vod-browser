@@ -10,6 +10,7 @@ import org.reckful.archive.browser.model.vod.DateTimeVodSortOption
 import org.reckful.archive.browser.model.vod.DurationVodSortOption
 import org.reckful.archive.browser.model.vod.RandomStableVodSortOption
 import org.reckful.archive.browser.repository.VodRepository
+import org.reckful.archive.browser.service.ChapterService.Companion.DEFAULT_CHAPTER_THUMBNAIL_URL
 import org.reckful.archive.browser.util.findWithLongestDurationGroupedBy
 import org.reckful.archive.browser.util.formatToDoubleNumber
 import org.reckful.archive.browser.util.formatToHumanReadable
@@ -150,11 +151,6 @@ class PersistentBrowseVodService(
             primaryChapterThumbnailUrl = primaryChapterThumbnailUrl,
             chapters = chaptersWithDuration.map { it.data }
         )
-    }
-
-    private companion object {
-        private const val DEFAULT_CHAPTER_THUMBNAIL_URL =
-            "https://reckfularchive.github.io/twitch-metadata/files/thumbnails/chapters/not_found.jpg"
     }
 }
 

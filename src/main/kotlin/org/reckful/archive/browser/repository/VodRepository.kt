@@ -46,4 +46,6 @@ interface VodRepository {
         playlistIds: List<Long>,
         page: Int, limit: Int
     ): List<VodEntity>
+
+    fun findByArchiveFileName(fileName: String): List<VodEntity>
 }
