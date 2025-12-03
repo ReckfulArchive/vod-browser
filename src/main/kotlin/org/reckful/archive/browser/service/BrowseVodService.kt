@@ -20,16 +20,19 @@ import java.time.format.DateTimeFormatter
 interface BrowseVodService {
 
     fun getChapterFilterOptions(
+        playlistId: Long,
         title: String? = null,
         year: Int? = null
     ): List<BrowseFilterChapter>
 
     fun getYearFilterOptions(
+        playlistId: Long,
         title: String? = null,
         chapterId: Long? = null,
     ): List<BrowseFilterYear>
 
     fun getPage(
+        playlistId: Long,
         title: String? = null,
         chapterId: Long? = null,
         year: Int? = null,
@@ -46,11 +49,12 @@ class PersistentBrowseVodService(
 ) : BrowseVodService {
 
     override fun getChapterFilterOptions(
+        playlistId: Long,
         title: String?,
         year: Int?
     ): List<BrowseFilterChapter> {
         return vodRepository.countChapterVods(
-            playlistIds = listOf(10L),
+            playlistIds = listOf(playlistId),
             likeTitle = title?.takeIf { it.isNotBlank() },
             year = year
         ).map {
@@ -63,11 +67,12 @@ class PersistentBrowseVodService(
     }
 
     override fun getYearFilterOptions(
+        playlistId: Long,
         title: String?,
         chapterId: Long?,
     ): List<BrowseFilterYear> {
         return vodRepository.countYearVods(
-            playlistIds = listOf(10),
+            playlistIds = listOf(playlistId),
             likeTitle = title?.takeIf { it.isNotBlank() },
             chapterId = chapterId
         ).map {
@@ -79,6 +84,7 @@ class PersistentBrowseVodService(
     }
 
     override fun getPage(
+        playlistId: Long,
         title: String?,
         chapterId: Long?,
         year: Int?,
@@ -99,7 +105,7 @@ class PersistentBrowseVodService(
         }
 
         val vods = vodRepository.findVods(
-            playlistIds = listOf(10),
+            playlistIds = listOf(playlistId),
             likeTitle = title?.takeIf { it.isNotBlank() },
             chapterId = chapterId,
             year = year,

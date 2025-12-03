@@ -1,1 +1,3 @@
-TODO
+There's a lot of shitty code in here, it's intentional to save time.
+
+One day everything will be refactored and will look top-notch... one day...

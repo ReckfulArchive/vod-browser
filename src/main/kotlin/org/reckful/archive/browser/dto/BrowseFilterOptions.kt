@@ -5,6 +5,7 @@ import java.net.URLEncoder
 import java.nio.charset.StandardCharsets
 
 data class BrowseFilterOptions(
+    val playlist: Long?,
     val title: String?,
     val chapter: String?,
     val year: String?,

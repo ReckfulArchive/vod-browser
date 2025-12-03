@@ -12,6 +12,8 @@ interface VodRepository {
 
     fun findById(vodId: Long): VodEntity?
 
+    fun countVods(playlistId: Long): Int
+
     fun countChapterVods(
         playlistIds: List<Long>,
         likeTitle: String?,

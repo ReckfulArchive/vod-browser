@@ -38,8 +38,10 @@ class BrowseVodController(
         val selectedChapterId = validatedFilterOptions.parseChapterId()
         val selectedYear = validatedFilterOptions.parseYear()
         val selectedSort = validatedFilterOptions.parseSort()
+        val selectedPlaylistId = filterOptions.playlist ?: 10
 
         val vodsPage = browseVodService.getPage(
+            playlistId = selectedPlaylistId,
             title = selectedTitle,
             chapterId = selectedChapterId,
             year = selectedYear,
@@ -50,15 +52,22 @@ class BrowseVodController(
         model.addAttribute("page", vodsPage)
 
         val chapterOptions = browseVodService.getChapterFilterOptions(
+            playlistId = selectedPlaylistId,
             title = selectedTitle,
             year = selectedYear
         )
         model.addAttribute("chapterFilters", chapterOptions)
 
-        val yearValues = browseVodService.getYearFilterOptions(title = selectedTitle, chapterId = selectedChapterId)
+        val yearValues = browseVodService.getYearFilterOptions(
+            playlistId = selectedPlaylistId,
+            title = selectedTitle,
+            chapterId = selectedChapterId
+        )
         model.addAttribute("yearFilters", yearValues)
 
         model.addAttribute("sortFilters", getSortFilters(randomSortSeed = sortSeed))
+
+        model.addAttribute("playlistId", selectedPlaylistId)
 
         return "browse/index"
     }
@@ -78,6 +87,7 @@ class BrowseVodController(
             "Limit is expected to be positive and be less than 250"
         }
         val vodsPage = browseVodService.getPage(
+            playlistId = requireNotNull(filterOptions.playlist),
             title = filterOptions.parseTitle(),
             chapterId = filterOptions.parseChapterId(),
             year = filterOptions.parseYear(),
@@ -99,8 +109,10 @@ class BrowseVodController(
         val selectedTitle = filterOptions.parseTitle()
         val selectedChapterId = filterOptions.parseChapterId()
         val selectedYear = filterOptions.parseYear()
+        val selectedPlaylistId = requireNotNull(filterOptions.playlist)
 
         val vodsPage = browseVodService.getPage(
+            playlistId = selectedPlaylistId,
             title = selectedTitle,
             chapterId = selectedChapterId,
             year = selectedYear,
@@ -111,13 +123,20 @@ class BrowseVodController(
         model.addAttribute("page", vodsPage)
 
         val chapterOptions = browseVodService.getChapterFilterOptions(
+            playlistId = selectedPlaylistId,
             title = selectedTitle,
             year = selectedYear
         )
         model.addAttribute("chapterFilters", chapterOptions)
 
-        val yearValues = browseVodService.getYearFilterOptions(title = selectedTitle, chapterId = selectedChapterId)
+        val yearValues = browseVodService.getYearFilterOptions(
+            playlistId = selectedPlaylistId,
+            title = selectedTitle,
+            chapterId = selectedChapterId
+        )
         model.addAttribute("yearFilters", yearValues)
+
+        model.addAttribute("playlistId", selectedPlaylistId)
 
         return HtmxResponse.builder()
             .view("browse/vods :: search-results")
@@ -138,8 +157,10 @@ class BrowseVodController(
         val selectedTitle = filterOptions.parseTitle()
         val selectedChapterId = filterOptions.parseChapterId()
         val selectedYear = filterOptions.parseYear()
+        val selectedPlaylistId = requireNotNull(filterOptions.playlist)
 
         val vodsPage = browseVodService.getPage(
+            playlistId = selectedPlaylistId,
             title = selectedTitle,
             chapterId = selectedChapterId,
             year = selectedYear,
@@ -149,8 +170,14 @@ class BrowseVodController(
         )
         model.addAttribute("page", vodsPage)
 
-        val yearValues = browseVodService.getYearFilterOptions(title = selectedTitle, chapterId = selectedChapterId)
+        val yearValues = browseVodService.getYearFilterOptions(
+            playlistId = selectedPlaylistId,
+            title = selectedTitle,
+            chapterId = selectedChapterId
+        )
         model.addAttribute("yearFilters", yearValues)
+
+        model.addAttribute("playlistId", selectedPlaylistId)
 
         return HtmxResponse.builder()
             .view("browse/vods :: search-results")
@@ -170,8 +197,10 @@ class BrowseVodController(
         val selectedTitle = filterOptions.parseTitle()
         val selectedChapterId = filterOptions.parseChapterId()
         val selectedYear = filterOptions.parseYear()
+        val selectedPlaylistId = requireNotNull(filterOptions.playlist)
 
         val vodsPage = browseVodService.getPage(
+            playlistId = selectedPlaylistId,
             title = selectedTitle,
             chapterId = selectedChapterId,
             year = selectedYear,
@@ -182,10 +211,13 @@ class BrowseVodController(
         model.addAttribute("page", vodsPage)
 
         val chapterOptions = browseVodService.getChapterFilterOptions(
+            playlistId = selectedPlaylistId,
             title = selectedTitle,
             year = selectedYear
         )
         model.addAttribute("chapterFilters", chapterOptions)
+
+        model.addAttribute("playlistId", selectedPlaylistId)
 
         return HtmxResponse.builder()
             .view("browse/vods :: search-results")
@@ -203,6 +235,7 @@ class BrowseVodController(
         request: HtmxRequest
     ): HtmxResponse {
         val vodsPage = browseVodService.getPage(
+            playlistId = requireNotNull(filterOptions.playlist),
             title = filterOptions.parseTitle(),
             chapterId = filterOptions.parseChapterId(),
             year = filterOptions.parseYear(),

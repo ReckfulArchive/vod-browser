@@ -20,7 +20,9 @@ class WebSecurityConfig : WebMvcConfigurer {
         http {
             authorizeHttpRequests {
                 authorize(LOGIN_PAGE_URL, permitAll)
-                authorize("/mod/**", authenticated)
+
+                authorize("/playlists", authenticated)
+                authorize("/playlist/**", authenticated)
 
                 authorize(anyRequest, permitAll)
             }
@@ -51,6 +53,6 @@ class WebSecurityConfig : WebMvcConfigurer {
         // Prefixed by /mod to discourage scanners and bots from trying to bruteforce / exploit logins.
         // Not much of an obstacle tbh (esp. since this code is open source), but it's better than nothing
         private const val LOGIN_PAGE_URL = "/mod/login"
-        private const val LOGOUT_PAGE_URL = "/mod/login"
+        private const val LOGOUT_PAGE_URL = "/mod/logout"
     }
 }

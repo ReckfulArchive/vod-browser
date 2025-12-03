@@ -42,6 +42,14 @@ class JdbcTemplateVodRepository(
         }
     }
 
+    override fun countVods(playlistId: Long): Int {
+        return jdbcTemplate.queryForObject(
+            "SELECT count(*) FROM vod_playlist_items WHERE playlist_id = :playlistId",
+            mapOf("playlistId" to playlistId),
+            Int::class.java
+        ) ?: 0
+    }
+
     override fun countChapterVods(playlistIds: List<Long>, likeTitle: String?, year: Int?): List<VodCountByChapter> {
         val sql = buildString(400) {
             appendLine("SELECT vod_chapter.id, vod_chapter.name, count(distinct vod_chapters.vod_id) as vod_count")
