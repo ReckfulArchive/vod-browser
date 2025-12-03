@@ -9,6 +9,10 @@
 </head>
 <body>
 
+<th:block th:replace="~{navbar}"/>
+
+<!--/* Add page content here */-->
+
 <th:block th:replace="~{base :: body-cellar(~{::script})}">
     <!--/* Additional cellar content (like scripts) goes here */-->
     <!--/* Replace with empty fragment if you have nothing to add.  */-->

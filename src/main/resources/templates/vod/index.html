@@ -13,6 +13,8 @@
 <body th:with="theme=${T(org.reckful.archive.browser.model.vod.VodTheme).random()}"
       th:styleappend="|background-image: url(${theme.getBackgroundImgPath()});|">
 
+<th:block th:replace="~{navbar}"/>
+
 <div id="header-padding" class="d-none d-lg-block" th:styleappend="|padding-bottom: ${theme.getHeaderSizePx()}px;|"></div>
 
 <!--/*@thymesVar id="vodDetails" type="org.reckful.archive.browser.model.vod.VodDetails"*/-->
