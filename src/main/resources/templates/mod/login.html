@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en" data-bs-theme="auto">
+<head th:replace="~{base :: header(~{::title},~{this::link})}">
+    <title>Moderator Login</title>
+
+    <link rel="stylesheet" th:href="@{/css/login.css}" type="text/css"/>
+</head>
+<body class="d-flex align-items-center py-4 bg-body-tertiary">
+
+<main class="form-signin w-100 m-auto">
+    <form th:action="@{/mod/login}" method="post">
+        <h1 class="h3 mb-3 fw-normal">Log in</h1>
+        <div class="form-floating">
+            <input type="text" class="form-control" id="floatingUsername" name="username" placeholder="username">
+            <label for="floatingUsername">Name</label>
+        </div>
+        <div class="form-floating">
+            <input type="password" class="form-control" id="floatingPassword" name="password" placeholder="Password">
+            <label for="floatingPassword">Password</label>
+        </div>
+        <div th:if="${param.error}" class="alert alert-danger my-2" role="alert">
+            Invalid username and/or password
+        </div>
+        <button class="btn btn-primary w-100 py-3" type="submit">Sign in</button>
+    </form>
+</main>
+
+<th:block th:replace="~{base :: body-cellar(~{})}">
+</th:block>
+
+</body>
+</html>

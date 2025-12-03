@@ -43,6 +43,10 @@ dependencies {
     developmentOnly("org.springframework.boot:spring-boot-devtools")
     implementation("org.jetbrains.kotlin:kotlin-reflect")
 
+    // security
+    implementation("org.springframework.boot:spring-boot-starter-security")
+    implementation("org.thymeleaf.extras:thymeleaf-extras-springsecurity6")
+
     // web
     implementation("org.springframework.boot:spring-boot-starter-thymeleaf")
     implementation("io.github.wimdeblauwe:htmx-spring-boot-thymeleaf:3.1.1")
