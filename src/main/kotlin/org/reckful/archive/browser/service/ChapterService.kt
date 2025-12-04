@@ -1,6 +1,8 @@
 package org.reckful.archive.browser.service
 
 import org.reckful.archive.browser.entity.VodChapterEntity
+import org.reckful.archive.browser.model.VodChapter
+import org.reckful.archive.browser.repository.ChapterRepository
 import org.reckful.archive.browser.repository.VodRepository
 import org.reckful.archive.browser.service.WebVttService.WebVttLine
 import org.springframework.stereotype.Service
@@ -12,8 +14,29 @@ import java.time.LocalTime
 @Service
 class ChapterService(
     private val vodRepository: VodRepository,
-    private val webVttService: WebVttService
+    private val webVttService: WebVttService,
+    private val chapterRepository: ChapterRepository
 ) {
+    @Transactional
+    fun getChapters(vodId: Long): List<VodChapter> {
+        return chapterRepository.findVodChapters(vodId)
+    }
+
+    @Transactional
+    fun addChapter(vodId: Long, chapterId: Long, startTimeSec: Int) {
+        chapterRepository.saveVodChapter(vodId, chapterId, startTimeSec)
+    }
+
+    @Transactional
+    fun removeChapter(vodId: Long, chapterId: Long, startTimeSec: Int) {
+        chapterRepository.removeVodChapter(vodId, chapterId, startTimeSec)
+    }
+
+    @Transactional
+    fun getChaptersForAutocomplete(): List<VodChapter> {
+        return chapterRepository.findPopularChapters()
+    }
+
     @Transactional(isolation = Isolation.REPEATABLE_READ)
     fun getChaptersWebVttFile(vodId: Long): String {
         val vod = vodRepository.findById(vodId)

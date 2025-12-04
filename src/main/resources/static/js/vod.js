@@ -55,3 +55,12 @@
         }
     }
 })()
+
+function setNewChapterStartTimeFromPlayer() {
+    let currentTimeSec = Math.round(document.querySelector("video").currentTime)
+    document.getElementById("startTimeSecInput").value = currentTimeSec
+}
+
+function setPlayerTime(seconds) {
+    document.querySelector("video").currentTime = parseInt(seconds)
+}

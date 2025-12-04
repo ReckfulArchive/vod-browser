@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en" data-bs-theme="auto">
 <head th:replace="~{base :: header(~{::title},~{this::link})}">
-    <title th:title="${playlist.name}"></title>
+    <title th:text="|${playlist.name} - Playlist - Reckful Archive|"></title>
 
     <link rel="stylesheet" th:href="@{/css/browse.css}" type="text/css"/>
 </head>

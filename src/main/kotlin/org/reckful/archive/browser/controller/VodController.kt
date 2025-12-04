@@ -41,6 +41,12 @@ class VodController(
 
             val selectedPlaylistIds = playlistService.getAllByVodId(vodId).map { it.id }
             model.addAttribute("selectedPlaylistIds", selectedPlaylistIds)
+
+            val vodChapters = chapterService.getChapters(vodId)
+            model.addAttribute("vodChapters", vodChapters)
+
+            val chaptersForAutocomplete = chapterService.getChaptersForAutocomplete()
+            model.addAttribute("chaptersForAutocomplete", chaptersForAutocomplete)
         }
 
         return "vod/index"

@@ -69,6 +69,8 @@
     </div>
 
     <th:block sec:authorize="hasAuthority('mod')" th:replace="~{vod/mod-tools::edit-info(vodDetails=${vodDetails})}"/>
+    <th:block sec:authorize="hasAuthority('mod')"
+              th:replace="~{vod/mod-tools::edit-chapters(vodDetails=${vodDetails})}"/>
 
     <div id="suggestions" class="pb-3">
         <th:block th:replace="~{ vod/suggestion :: nextByDateContainer(vodId=${vodDetails.id}) }"></th:block>
