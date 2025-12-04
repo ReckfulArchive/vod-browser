@@ -23,6 +23,7 @@ class WebSecurityConfig : WebMvcConfigurer {
 
                 authorize("/playlists", authenticated)
                 authorize("/playlist/**", authenticated)
+                authorize("/vod/{vodId}/edit", authenticated)
 
                 authorize(anyRequest, permitAll)
             }

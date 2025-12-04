@@ -1,5 +1,6 @@
 package org.reckful.archive.browser.service
 
+import org.reckful.archive.browser.dto.EditVodForm
 import org.reckful.archive.browser.dto.VodChapterDTO
 import org.reckful.archive.browser.dto.VodDTO
 import org.reckful.archive.browser.entity.VodChapterEntity
@@ -14,6 +15,8 @@ import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Isolation
 import org.springframework.transaction.annotation.Transactional
 import java.net.URLEncoder
+import java.time.LocalDate
+import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import java.util.*
 
@@ -24,12 +27,15 @@ interface VodService {
     fun findArchiveVodsByFileName(archiveFileName: String): List<VodDTO>
 
     fun saveReport(vodId: Long, type: String, message: String)
+
+    fun update(editVodForm: EditVodForm)
 }
 
 @Service
 class PersistentVodService(
     private val chapterMapper: ChapterMapper,
-    private val vodRepository: VodRepository
+    private val vodRepository: VodRepository,
+    private val playlistService: PlaylistService
 ) : VodService {
 
     override fun getVodDetailsById(vodId: Long): VodDetails? {
@@ -40,7 +46,8 @@ class PersistentVodService(
             externalId = vod.externalId,
             title = vod.title,
             description = vod.description,
-            date = vod.dateTime.format(VOD_DETAILS_DATE_FORMATTER),
+            dateHuman = vod.dateTime.format(VOD_DETAILS_DATE_FORMATTER),
+            dateIso = vod.dateTime.format(DateTimeFormatter.ISO_DATE),
             url = getArchiveVideoFileUrl(vodMirrors),
             thumbnailUrl = vod.thumbnailUrl,
             previewSpriteUrl = vod.previewSpriteUrl
@@ -95,6 +102,23 @@ class PersistentVodService(
 
     override fun saveReport(vodId: Long, type: String, message: String) {
         vodRepository.insertReport(vodId, type, message)
+    }
+
+    @Transactional
+    override fun update(editVodForm: EditVodForm) {
+        val vodEntity = vodRepository.findById(editVodForm.id)
+            ?: throw IllegalArgumentException("Vod not found: ${editVodForm.id}")
+
+        val updatedEntity = vodEntity.copy(
+            title = editVodForm.title,
+            description = editVodForm.description,
+            dateTime = LocalDateTime.of(
+                LocalDate.parse(editVodForm.dateIso, DateTimeFormatter.ISO_DATE),
+                vodEntity.dateTime.toLocalTime()
+            )
+        )
+        vodRepository.update(updatedEntity)
+        playlistService.changeVodPlaylists(vodEntity.id, editVodForm.playlists)
     }
 
     private companion object {

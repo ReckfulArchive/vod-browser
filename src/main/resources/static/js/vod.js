@@ -18,7 +18,9 @@
         try {
             player.hotkeys({
                 volumeStep: 0.1,
-                seekStep: 5
+                seekStep: 5,
+                // numbers interfere with input fields on the page
+                enableNumbers: false,
             });
         } catch (error) {
             console.error(error)

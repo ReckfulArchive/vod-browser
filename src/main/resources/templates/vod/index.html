@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html lang="en" data-bs-theme="auto">
+<html lang="en" data-bs-theme="auto"
+      xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
 
 <!--/*@thymesVar id="vodDetails" type="org.reckful.archive.browser.model.vod.VodDetails"*/-->
 <head th:replace="~{base :: header(~{::title},~{this::link})}">
@@ -57,7 +58,7 @@
         </div>
         <div id="chat"
              class="col-md-4 ps-3 d-none d-md-block"
-             th:with="isDevMode=${#arrays.contains(@environment.activeProfiles, 'dev')}">
+             th:with="isDevMode=${#arrays.contains(@environment.activeProfiles, 'test')}">
 
             <div th:if="${isDevMode}" class="h-100 w-100" style="background-color: darkgray;"></div>
             <iframe th:unless="${isDevMode}"
@@ -66,6 +67,8 @@
             </iframe>
         </div>
     </div>
+
+    <th:block sec:authorize="hasAuthority('mod')" th:replace="~{vod/mod-tools::edit-info(vodDetails=${vodDetails})}"/>
 
     <div id="suggestions" class="pb-3">
         <th:block th:replace="~{ vod/suggestion :: nextByDateContainer(vodId=${vodDetails.id}) }"></th:block>

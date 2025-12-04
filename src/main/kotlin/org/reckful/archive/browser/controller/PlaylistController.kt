@@ -4,6 +4,7 @@ import org.reckful.archive.browser.dto.BrowseFilterOptions
 import org.reckful.archive.browser.model.browse.*
 import org.reckful.archive.browser.service.BrowseVodService
 import org.reckful.archive.browser.service.PlaylistService
+import org.springframework.security.access.annotation.Secured
 import org.springframework.stereotype.Controller
 import org.springframework.ui.Model
 import org.springframework.web.bind.annotation.GetMapping
@@ -16,12 +17,14 @@ class PlaylistController(
     private val browseVodService: BrowseVodService,
 ) {
     @GetMapping("playlists")
+    @Secured("mod")
     fun getPlaylists(model: Model): String {
         model.addAttribute("playlists", playlistService.getAllPlaylists())
         return "playlist/playlists"
     }
 
     @GetMapping("/playlist/{playlistId}")
+    @Secured("mod")
     fun getPlaylist(
         @PathVariable playlistId: Long,
         model: Model,
@@ -88,6 +91,7 @@ class PlaylistController(
     }
 
     @PostMapping("playlists")
+    @Secured("mod")
     fun createPlaylist(name: String, description: String): String {
         playlistService.createPlaylist(name, description)
         return "redirect:/playlists"

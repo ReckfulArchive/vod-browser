@@ -12,6 +12,7 @@ import org.springframework.jdbc.core.RowMapper
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate
 import org.springframework.stereotype.Repository
+import java.sql.Timestamp
 import java.time.Duration
 
 // TODO clean up copy-paste
@@ -309,6 +310,27 @@ class JdbcTemplateVodRepository(
             .addValue("fileName", "%$fileName%")
 
         return jdbcTemplate.query(sql, params, ROW_MAPPER_VOD_ENTITY)
+    }
+
+    override fun update(vodEntity: VodEntity) {
+        val sql = """
+            UPDATE vod
+            SET title       = :title,
+                description = :description,
+                upload_ts   = :uploadTs
+            WHERE id = :id
+        """.trimIndent()
+
+        val params = MapSqlParameterSource()
+            .addValue("id", vodEntity.id)
+            .addValue("title", vodEntity.title)
+            .addValue("description", vodEntity.description?.takeIf { it.isNotBlank() })
+            .addValue("uploadTs", Timestamp.valueOf(vodEntity.dateTime))
+
+        val updatedRows = jdbcTemplate.update(sql, params)
+        require(updatedRows == 1) {
+            "Unable to update vod entity for some reason: $vodEntity"
+        }
     }
 
     private companion object {

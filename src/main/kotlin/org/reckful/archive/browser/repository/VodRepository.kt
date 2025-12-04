@@ -50,4 +50,6 @@ interface VodRepository {
     ): List<VodEntity>
 
     fun findByArchiveFileName(fileName: String): List<VodEntity>
+
+    fun update(vodEntity: VodEntity)
 }

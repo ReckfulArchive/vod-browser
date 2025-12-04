@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<!--suppress XmlUnusedNamespaceDeclaration -->
+<html xmlns:th="http://www.thymeleaf.org" lang="en"
+      xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
+<body>
+
+<!--/*@thymesVar id="vodDetails" type="org.reckful.archive.browser.model.vod.VodDetails"*/-->
+<!--/*@thymesVar id="playlists" type="org.reckful.archive.browser.model.Playlist"*/-->
+<div th:fragment="edit-info(vodDetails)" th:assert="${vodDetails != null}">
+    <hr>
+    <h3>Edit VOD information</h3>
+    <form th:action="|/vod/${vodDetails.id}/edit|" class="row g-3" method="post">
+        <input type="hidden" name="id" th:value="${vodDetails.id}">
+        <div class="col-10">
+            <label for="title" class="form-label">Title</label>
+            <input type="text" class="form-control" id="title" name="title"
+                   th:value="${vodDetails.title}" placeholder="stream name">
+        </div>
+        <div class="col-2">
+            <label for="dateIso" class="form-label">Date</label>
+            <input type="date" class="form-control" id="dateIso" name="dateIso"
+                   th:value="${vodDetails.dateIso}" min="2012-01-01" max="2020-12-31">
+        </div>
+        <div class="col-12">
+            <label for="description" class="form-label">Description</label>
+            <textarea class="form-control" id="description" name="description"
+                      th:text="${vodDetails.description}" rows="2"></textarea>
+        </div>
+        <div class="col-12">
+            <label for="playlists" class="form-label">Playlists</label>
+            <select id="playlists" name="playlists" class="form-control selectpicker" multiple data-live-search="true"
+                    data-size="8">
+                <option th:each="playlist : ${allPlaylists}"
+                        th:object="${playlist}"
+                        th:value="*{id}"
+                        th:selected="${selectedPlaylistIds.contains(playlist.id)}"
+                        th:text="*{name}"/>
+            </select>
+        </div>
+
+        <div class="col-12 d-flex justify-content-end">
+            <button type="submit" class="btn btn-success">Save</button>
+        </div>
+        <hr>
+    </form>
+</div>
+
+</body>
+</html>

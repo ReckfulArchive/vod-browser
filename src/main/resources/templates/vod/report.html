@@ -1,6 +1,8 @@
 <!DOCTYPE html>
 
-<html xmlns:th="http://www.thymeleaf.org" xmlns:hx-on="http://www.w3.org/1999/xhtml" lang="en">
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:hx-on="http://www.w3.org/1999/xhtml"
+      xmlns:hx="http://www.w3.org/1999/xhtml" lang="en">
 
 <body>
 
@@ -26,6 +28,7 @@
                       hx-post="/vod/report"
                       hx-include="#report-form *"
                       hx-swap="none"
+                      hx:vals="${ {_csrf.parameterName: _csrf.token } }"
                       hx-on::after-request="$('#report-vod-modal').modal('hide'); document.getElementById('report-form').reset();">
 
                     <div class="mb-3 row">
