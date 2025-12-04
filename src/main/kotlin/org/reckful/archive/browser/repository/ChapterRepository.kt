@@ -60,7 +60,7 @@ class JdbcTemplateChapterRepository(
 
     override fun findPopularChapters(): List<VodChapter> {
         return jdbcTemplate.query(
-            "SELECT id, name FROM vod_chapter WHERE popularity >= 999999 ORDER BY popularity DESC"
+            "SELECT id, name FROM vod_chapter WHERE popularity >= 999999 ORDER BY popularity DESC, id"
         ) { rs, _ ->
             VodChapter(
                 id = rs.getLong("id"),
