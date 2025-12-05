@@ -1,0 +1,16 @@
+spring:
+  datasource:
+    url: 'jdbc:postgresql://localhost:8080/example'
+    username: 'admin'
+    password: 'admin'
+  web:
+    resources:
+      chain:
+        strategy:
+          content:
+            enabled: true
+            paths: "/**"
+        compressed: true
+      cache:
+        cachecontrol:
+          max-age: '365d'
