@@ -1,3 +1,3 @@
 plugins {
-    id("vodbrowser.spring")
+    id("vodbrowser.spring-thymeleaf")
 }

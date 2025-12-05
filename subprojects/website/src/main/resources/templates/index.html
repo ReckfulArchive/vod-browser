@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en" data-bs-theme="auto"
+      xmlns:th="http://www.thymeleaf.org"
+>
+
+<head th:replace="~{fragments/base :: header(~{::title},~{::link},~{::meta})}">
+    <title>VODs - Reckful Archive</title>
+
+    <meta name="title" content="VODs - Reckful Archive"/>
+    <meta name="description" content="VOD Archive of Byron Bernstein, also known as Reckful"/>
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website"/>
+    <meta property="og:url" content="https://vods.reckful-archive.org"/>
+    <meta property="og:title" content="VODs - Reckful Archive"/>
+    <meta property="og:description" content="VOD Archive of Byron Bernstein, also known as Reckful"/>
+    <meta property="og:image" th:content="@{/img/og-index.jpg}"/>
+
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image"/>
+    <meta property="twitter:url" content="https://vods.reckful-archive.org"/>
+    <meta property="twitter:title" content="VODs - Reckful Archive"/>
+    <meta property="twitter:description" content="VOD Archive of Byron Bernstein, also known as Reckful"/>
+    <meta property="twitter:image" th:content="@{/img/og-index.jpg}"/>
+
+    <link rel="stylesheet" th:href="@{/css/page.css}"/>
+</head>
+<body>
+
+<nav th:replace="~{fragments/navbar :: navbar}"></nav>
+
+<p>Page content</p>
+
+<footer th:replace="~{fragments/footer :: footer}">
+</footer>
+
+<th:block th:replace="~{fragments/base :: body-cellar(~{})}">
+</th:block>
+
+</body>
+</html>

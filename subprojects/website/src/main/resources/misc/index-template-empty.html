@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en" data-bs-theme="auto"
+      xmlns:th="http://www.thymeleaf.org"
+>
+
+<head th:replace="~{fragments/base :: header(~{::title},~{::link},~{::meta})}">
+    <!-- TODO -->
+    <title>TODO</title>
+
+    <!-- TODO -->
+    <meta name="title" content="TODO"/>
+    <meta name="description" content="TODO"/>
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website"/>
+    <meta property="og:url" content="TODO"/>
+    <meta property="og:title" content="TODO"/>
+    <meta property="og:description" content="TODO"/>
+    <meta property="og:image" th:content="@{/img/media-preview.jpg}"/>
+
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image"/>
+    <meta property="twitter:url" content="TODO"/>
+    <meta property="twitter:title" content="TODO"/>
+    <meta property="twitter:description" content="TODO"/>
+    <meta property="twitter:image" th:content="@{/img/media-preview.jpg}"/>
+
+    <!-- TODO -->
+    <link rel="stylesheet" th:href="@{/css/page.css}"/>
+</head>
+<body>
+
+<nav th:replace="~{fragments/navbar :: navbar}"></nav>
+
+<p>Page content</p>
+
+<footer th:replace="~{fragments/footer :: footer}"></footer>
+
+<th:block th:replace="~{fragments/base :: body-cellar(~{::script})}">
+    <!--/* Additional cellar content (like scripts) goes here */-->
+    <!--/* Replace with empty fragment if you have nothing to add.  */-->
+</th:block>
+
+</body>
+</html>

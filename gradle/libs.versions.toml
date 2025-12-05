@@ -8,7 +8,26 @@ spring-dependencyManagement = "1.1.7"
 
 gorylenko-gitProperties = "2.5.4"
 
+# https://mvnrepository.com/artifact/io.github.wimdeblauwe/htmx-spring-boot-thymeleaf
+htmx-spring-boot-thymeleaf = "4.0.2"
+
+bootstrap = "5.3.8"
+bootstrap-icons = "1.13.1"
+htmx = "2.0.8"
+
+bootstrap-select = "1.14.0-beta3"
+jquery = "3.7.1" # needed for bootstrap-select to work properly
+
 [libraries]
+
+htmx-spring-boot-thymeleaf = { module = "io.github.wimdeblauwe:htmx-spring-boot-thymeleaf", version.ref = "htmx-spring-boot-thymeleaf" }
+
+webjars-bootstrap = { module = "org.webjars:bootstrap", version.ref = "bootstrap" }
+webjars-bootstrapIcons = { module = "org.webjars.npm:bootstrap-icons", version.ref = "bootstrap-icons" }
+webjars-htmx = { module = "org.webjars.npm:htmx.org", version.ref = "htmx" }
+
+webjars-bootstrapSelect = { module = "org.webjars.npm:bootstrap-select", version.ref = "bootstrap-select" }
+webjars-jquery = { module = "org.webjars:jquery", version.ref = "jquery" }
 
 gradlePlugin-kotlin = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlin" }
 gradlePlugin-spring-kotlin = { module = "org.jetbrains.kotlin:kotlin-allopen", version.ref = "kotlin" }

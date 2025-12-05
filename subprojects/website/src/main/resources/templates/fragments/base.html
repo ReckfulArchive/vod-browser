@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en" data-bs-theme="auto" xmlns:th="http://www.thymeleaf.org">
+
+<head th:fragment="header(title,links,meta)">
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <th:block th:replace="${meta}"/>
+
+    <link rel="apple-touch-icon" sizes="180x180" th:href="@{/apple-touch-icon.png}">
+    <link rel="icon" type="image/png" sizes="32x32" th:href="@{/favicon-32x32.png}">
+    <link rel="icon" type="image/png" sizes="16x16" th:href="@{/favicon-16x16.png}">
+    <link rel="manifest" th:href="@{/site.webmanifest}">
+
+    <title th:replace="${title}">VOD Browser - Reckful Archive</title>
+
+    <link rel="stylesheet" th:href="@{/webjars/bootstrap/5.3.8/css/bootstrap.min.css}"/>
+    <link rel="stylesheet" th:href="@{/webjars/bootstrap-icons/1.13.1/font/bootstrap-icons.min.css}"/>
+    <link rel="stylesheet" th:href="@{/webjars/bootstrap-select/1.14.0-beta3/dist/css/bootstrap-select.min.css}"/>
+    <link rel="stylesheet" th:href="@{/css/main.css}"/>
+
+    <th:block th:replace="${links}"/>
+</head>
+<body>
+
+<!--/*-->
+<p>Page body</p>
+<!--*/-->
+
+<th:block th:fragment="body-cellar(scripts)">
+
+    <script th:src="@{/webjars/bootstrap/5.3.8/js/bootstrap.bundle.min.js}"></script>
+    <script th:src="@{/webjars/jquery/3.7.1/jquery.min.js}"></script>
+    <script th:src="@{/webjars/bootstrap-select/1.14.0-beta3/dist/js/bootstrap-select.min.js}"></script>
+    <script th:src="@{/webjars/htmx.org/2.0.8/dist/htmx.min.js}"></script>
+    <script th:src="@{/js/main.js}"></script>
+
+    <th:block th:replace="${scripts}"/>
+
+    <!-- 100% privacy-first analytics -->
+    <script async defer
+            data-path-overwriter="analyticsPathOverwriter"
+            src="https://scripts.simpleanalyticscdn.com/latest.js">
+    </script>
+    <noscript>
+        <img src="https://queue.simpleanalyticscdn.com/noscript.gif" alt=""
+             referrerpolicy="no-referrer-when-downgrade"/>
+    </noscript>
+</th:block>
+
+</body>
+</html>

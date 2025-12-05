@@ -1,5 +1,3 @@
-import org.jetbrains.kotlin.gradle.tasks.KotlinCompilationTask
-
 plugins {
     id("vodbrowser.kotlin-jvm")
 
@@ -8,7 +6,7 @@ plugins {
     kotlin("plugin.spring")
 }
 
-tasks.named("compileKotlin", KotlinCompilationTask::class.java) {
+kotlin {
     compilerOptions {
         // For explanation of -Xjsr305=strict, see
         // - https://kotlinlang.org/docs/java-interop.html#jsr-305-support
