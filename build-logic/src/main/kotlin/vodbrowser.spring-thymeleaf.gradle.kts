@@ -21,4 +21,6 @@ dependencies {
 
     implementation(libs.webjars.bootstrapSelect)
     implementation(libs.webjars.jquery)
+
+    implementation(libs.webjarsLocator)
 }

@@ -20,6 +20,8 @@ fontAwesome = "7.0.1"
 bootstrap-select = "1.14.0-beta3"
 jquery = "3.7.1" # needed for bootstrap-select to work properly
 
+webjars-locator = "0.52"
+
 [libraries]
 
 htmx-spring-boot-thymeleaf = { module = "io.github.wimdeblauwe:htmx-spring-boot-thymeleaf", version.ref = "htmx-spring-boot-thymeleaf" }
@@ -32,6 +34,8 @@ webjars-fontAwesome = { module = "org.webjars:font-awesome", version.ref = "font
 
 webjars-bootstrapSelect = { module = "org.webjars.npm:bootstrap-select", version.ref = "bootstrap-select" }
 webjars-jquery = { module = "org.webjars:jquery", version.ref = "jquery" }
+
+webjarsLocator = { module = "org.webjars:webjars-locator", version.ref = "webjars-locator" }
 
 gradlePlugin-kotlin = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlin" }
 gradlePlugin-spring-kotlin = { module = "org.jetbrains.kotlin:kotlin-allopen", version.ref = "kotlin" }
