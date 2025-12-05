@@ -1,4 +1,4 @@
-package org.reckfularchive.browser.backend
+package org.reckfularchive.vods.backend
 
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication
@@ -7,5 +7,5 @@ fun main() {
     runApplication<Application>()
 }
 
-@SpringBootApplication(scanBasePackages = ["org.reckfularchive.browser"])
+@SpringBootApplication(scanBasePackages = ["org.reckfularchive.vods"])
 class Application
