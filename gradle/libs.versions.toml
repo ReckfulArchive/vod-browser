@@ -12,8 +12,10 @@ gorylenko-gitProperties = "2.5.4"
 htmx-spring-boot-thymeleaf = "4.0.2"
 
 bootstrap = "5.3.8"
-bootstrap-icons = "1.13.1"
 htmx = "2.0.8"
+
+bootstrap-icons = "1.13.1"
+fontAwesome = "7.0.1"
 
 bootstrap-select = "1.14.0-beta3"
 jquery = "3.7.1" # needed for bootstrap-select to work properly
@@ -23,8 +25,10 @@ jquery = "3.7.1" # needed for bootstrap-select to work properly
 htmx-spring-boot-thymeleaf = { module = "io.github.wimdeblauwe:htmx-spring-boot-thymeleaf", version.ref = "htmx-spring-boot-thymeleaf" }
 
 webjars-bootstrap = { module = "org.webjars:bootstrap", version.ref = "bootstrap" }
-webjars-bootstrapIcons = { module = "org.webjars.npm:bootstrap-icons", version.ref = "bootstrap-icons" }
 webjars-htmx = { module = "org.webjars.npm:htmx.org", version.ref = "htmx" }
+
+webjars-bootstrapIcons = { module = "org.webjars.npm:bootstrap-icons", version.ref = "bootstrap-icons" }
+webjars-fontAwesome = { module = "org.webjars:font-awesome", version.ref = "fontAwesome" }
 
 webjars-bootstrapSelect = { module = "org.webjars.npm:bootstrap-select", version.ref = "bootstrap-select" }
 webjars-jquery = { module = "org.webjars:jquery", version.ref = "jquery" }

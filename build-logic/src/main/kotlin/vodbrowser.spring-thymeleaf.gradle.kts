@@ -14,8 +14,10 @@ dependencies {
 
     // Webjars
     implementation(libs.webjars.bootstrap)
-    implementation(libs.webjars.bootstrapIcons)
     implementation(libs.webjars.htmx)
+
+    implementation(libs.webjars.bootstrapIcons)
+    implementation(libs.webjars.fontAwesome)
 
     implementation(libs.webjars.bootstrapSelect)
     implementation(libs.webjars.jquery)

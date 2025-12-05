@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html lang="en" data-bs-theme="auto"
-      xmlns:th="http://www.thymeleaf.org"
->
+      xmlns:th="http://www.thymeleaf.org">
 
 <head th:replace="~{fragments/base :: header(~{::title},~{::link},~{::meta})}">
     <title>VODs - Reckful Archive</title>
@@ -23,16 +22,15 @@
     <meta property="twitter:description" content="VOD Archive of Byron Bernstein, also known as Reckful"/>
     <meta property="twitter:image" th:content="@{/img/og-index.jpg}"/>
 
-    <link rel="stylesheet" th:href="@{/css/page.css}"/>
+    <link rel="stylesheet" th:href="@{/css/sidebars.css}"/>
 </head>
 <body>
 
-<nav th:replace="~{fragments/navbar :: navbar}"></nav>
+<main class="d-flex flex-nowrap">
+    <th:block th:replace="~{fragments/sidebar :: sidebar}"></th:block>
 
-<p>Page content</p>
-
-<footer th:replace="~{fragments/footer :: footer}">
-</footer>
+    <p>Page content</p>
+</main>
 
 <th:block th:replace="~{fragments/base :: body-cellar(~{})}">
 </th:block>

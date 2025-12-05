@@ -16,25 +16,25 @@
     <meta property="og:url" content="TODO"/>
     <meta property="og:title" content="TODO"/>
     <meta property="og:description" content="TODO"/>
-    <meta property="og:image" th:content="@{/img/media-preview.jpg}"/>
+    <meta property="og:image" th:content="@{/img/og-index.png}"/>
 
     <!-- Twitter -->
     <meta property="twitter:card" content="summary_large_image"/>
     <meta property="twitter:url" content="TODO"/>
     <meta property="twitter:title" content="TODO"/>
     <meta property="twitter:description" content="TODO"/>
-    <meta property="twitter:image" th:content="@{/img/media-preview.jpg}"/>
+    <meta property="twitter:image" th:content="@{/img/og-index.png}"/>
 
     <!-- TODO -->
-    <link rel="stylesheet" th:href="@{/css/page.css}"/>
+    <link rel="stylesheet" th:href="@{/css/TODO.css}"/>
 </head>
 <body>
 
-<nav th:replace="~{fragments/navbar :: navbar}"></nav>
+<main class="d-flex flex-nowrap">
+    <th:block th:replace="~{fragments/sidebar :: sidebar}"></th:block>
 
-<p>Page content</p>
-
-<footer th:replace="~{fragments/footer :: footer}"></footer>
+    <p>Page content</p>
+</main>
 
 <th:block th:replace="~{fragments/base :: body-cellar(~{::script})}">
     <!--/* Additional cellar content (like scripts) goes here */-->

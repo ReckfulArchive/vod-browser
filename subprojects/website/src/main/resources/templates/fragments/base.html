@@ -16,9 +16,15 @@
     <title th:replace="${title}">VOD Browser - Reckful Archive</title>
 
     <link rel="stylesheet" th:href="@{/webjars/bootstrap/5.3.8/css/bootstrap.min.css}"/>
-    <link rel="stylesheet" th:href="@{/webjars/bootstrap-icons/1.13.1/font/bootstrap-icons.min.css}"/>
     <link rel="stylesheet" th:href="@{/webjars/bootstrap-select/1.14.0-beta3/dist/css/bootstrap-select.min.css}"/>
+    <link rel="stylesheet" th:href="@{/webjars/bootstrap-icons/1.13.1/font/bootstrap-icons.min.css}"/>
+
+    <link rel="stylesheet" th:href="@{/webjars/font-awesome/7.0.1/css/fontawesome.min.css}"/>
+    <link rel="stylesheet" th:href="@{/webjars/font-awesome/7.0.1/css/brands.min.css}"/>
+    <link rel="stylesheet" th:href="@{/webjars/font-awesome/7.0.1/css/solid.min.css}"/>
+
     <link rel="stylesheet" th:href="@{/css/main.css}"/>
+    <link rel="stylesheet" th:href="@{/css/sidebars.css}"/>
 
     <th:block th:replace="${links}"/>
 </head>
@@ -34,7 +40,6 @@
     <script th:src="@{/webjars/jquery/3.7.1/jquery.min.js}"></script>
     <script th:src="@{/webjars/bootstrap-select/1.14.0-beta3/dist/js/bootstrap-select.min.js}"></script>
     <script th:src="@{/webjars/htmx.org/2.0.8/dist/htmx.min.js}"></script>
-    <script th:src="@{/js/main.js}"></script>
 
     <th:block th:replace="${scripts}"/>
 
