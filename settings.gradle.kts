@@ -1,22 +1,32 @@
-@file:Suppress("LocalVariableName")
+@file:Suppress("UnstableApiUsage")
 
-rootProject.name = "vod-browser-server"
+rootProject.name = "vod-browser"
 
 pluginManagement {
-    plugins {
-        val kotlin_version: String by settings
-        val spring_boot_version: String by settings
-        val spring_dependency_management_version: String by settings
+    includeBuild("build-logic")
 
-        kotlin("jvm") version kotlin_version
-        kotlin("plugin.serialization") version kotlin_version
+    repositories {
+        gradlePluginPortal()
+        mavenCentral()
+    }
+}
 
-        id("org.springframework.boot") version spring_boot_version
-        id("io.spring.dependency-management") version spring_dependency_management_version
-        kotlin("plugin.spring") version kotlin_version
+dependencyResolutionManagement {
+    repositories {
+        mavenCentral()
+
+        maven(url = "https://repo.spring.io/milestone")
+        maven(url = "https://repo.spring.io/snapshot")
     }
 }
 
 plugins {
-    id("org.gradle.toolchains.foojay-resolver-convention") version "0.7.0"
+    id("org.gradle.toolchains.foojay-resolver-convention") version ("1.0.0")
 }
+
+include(
+    ":subprojects:backend",
+    ":subprojects:website",
+)
+
+enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")

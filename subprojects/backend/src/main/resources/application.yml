@@ -1,0 +1,18 @@
+server:
+  compression:
+    enabled: true
+
+# Spring actuator
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health, flyway, info, loggers, metrics, scheduledtasks
+  endpoint:
+    health:
+      show-components: when_authorized
+      show-details: when_authorized
+  info:
+    git.enabled: true
+    os.enabled: true
+    java.enabled: true
