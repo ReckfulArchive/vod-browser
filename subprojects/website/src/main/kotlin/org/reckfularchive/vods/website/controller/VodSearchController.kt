@@ -6,14 +6,14 @@ import org.springframework.ui.Model
 import org.springframework.web.bind.annotation.GetMapping
 
 @Controller
-class IndexController(
+class VodSearchController(
     private val vodSearchService: VodSearchService
 ) {
 
-    @GetMapping("/")
-    fun index(model: Model): String {
-        val searchResult = vodSearchService.search(page = 1, limit = 40)
+    @GetMapping("/search")
+    fun search(model: Model): String {
+        val searchResult = vodSearchService.search(1, 30)
         model.addAttribute("searchResult", searchResult)
-        return "index"
+        return "fragments/vod-search-results :: vods"
     }
 }

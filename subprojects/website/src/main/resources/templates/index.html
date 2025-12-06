@@ -22,15 +22,21 @@
     <meta property="twitter:description" content="VOD Archive of Byron Bernstein, also known as Reckful"/>
     <meta property="twitter:image" th:content="@{/img/og-index.jpg}"/>
 
-    <link rel="stylesheet" th:href="@{/css/sidebars.css}"/>
+    <link rel="stylesheet" th:href="@{/css/sidebar.css}" type="text/css"/>
+    <link rel="stylesheet" th:href="@{/css/search-results.css}" type="text/css"/>
 </head>
 <body>
 
-<main class="d-flex flex-nowrap">
+
+<div class="d-flex flex-nowrap min-vh-100">
     <th:block th:replace="~{fragments/sidebar :: sidebar}"></th:block>
 
-    <p>Page content</p>
-</main>
+    <main class="flex-fill p-4 overflow-x-hidden">
+        <div class="container-fluid">
+            <div th:replace="~{fragments/vod-search-results :: results}"></div>
+        </div>
+    </main>
+</div>
 
 <th:block th:replace="~{fragments/base :: body-cellar(~{})}">
 </th:block>

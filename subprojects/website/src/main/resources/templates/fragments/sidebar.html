@@ -4,7 +4,7 @@
 <body>
 
 <th:block th:fragment="sidebar">
-    <div class="d-flex flex-column flex-shrink-0 p-3 text-bg-dark" style="width: 280px;">
+    <div class="d-flex flex-column flex-shrink-0 p-3 text-bg-dark position-sticky top-0 sidebar">
         <a href="/" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-white text-decoration-none">
             <img th:src="@{/img/duck.png}" alt="" width="32" height="32" class="rounded-circle me-4">
             <span class="fs-4">VOD Archive</span> </a>
@@ -92,7 +92,7 @@
             </ul>
         </div>
     </div>
-    <div class="sidebar-divider sidebar-divider-vr"></div>
+    <div class="sidebar-divider"></div>
 </th:block>
 
 </body>
