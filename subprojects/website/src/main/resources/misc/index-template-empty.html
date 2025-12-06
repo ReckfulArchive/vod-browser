@@ -30,11 +30,15 @@
 </head>
 <body>
 
-<main class="d-flex flex-nowrap">
+<div class="d-flex flex-nowrap min-vh-100">
     <th:block th:replace="~{fragments/sidebar :: sidebar}"></th:block>
 
-    <p>Page content</p>
-</main>
+    <main class="flex-fill p-4">
+        <div class="container-fluid">
+            <p>Page content</p>
+        </div>
+    </main>
+</div>
 
 <th:block th:replace="~{fragments/base :: body-cellar(~{::script})}">
     <!--/* Additional cellar content (like scripts) goes here */-->
